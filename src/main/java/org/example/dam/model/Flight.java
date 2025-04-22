@@ -6,7 +6,7 @@ import java.util.Date;
 
 @Entity
 public class Flight {
-
+//TODO un commit para probar una cosa
     @Id
     @Column(nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
