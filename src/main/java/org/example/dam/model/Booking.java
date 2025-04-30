@@ -12,9 +12,18 @@ public class Booking {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, unique = true)
     private Integer number;
+
+    @Column(nullable = false)
     private Date datePurchase;
+
+    @Column(nullable = false)
     private Double price;
+
+    //TODO
+    @Column(nullable = false)
+    private String status;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -71,5 +80,13 @@ public class Booking {
 
     public void setPrice(Double price) {
         this.price = price;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }
