@@ -1,43 +1,50 @@
 <template>
-  <div id="app">
-    <header v-if="showHeader">
-      <h1>Flight Booking</h1>
-      <nav>
-        <router-link to="/flights">Flights</router-link>
-        <router-link to="/bookings">My Bookings</router-link>
-        <router-link v-if="isAdmin" to="/admin">Admin</router-link>
-        <button @click="logout">Logout</button>
-      </nav>
-    </header>
+  <div class="layout">
+    <AppHeader v-if="route.path !== '/login'" />
 
-    <main>
+    <main class="page-content">
       <router-view />
     </main>
   </div>
 </template>
 
-<script setup>
-// No logic needed here yet
-</script>
-
 <style scoped>
-#app {
-  font-family: 'Segoe UI', sans-serif;
-  text-align: center;
-  padding: 0px 20px;
-  min-width: 70vw;
+.layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
-header {
-  background-color: #1e90ff;
-  color: white;
-  padding: 15px;
-  margin-bottom: 30px;
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 }
 
-main {
-  max-width: 800px;
-  margin: 10px auto;
+.page-content {
+  flex: 1;
+  padding: 20px;
+
+  div {
+    background-color: #e0edf9e0;
+  }
+}
+
+@media (min-width: 1024px) {
+  .page-content > div{
+    max-width: 50dvw;
+    flex: 1;
+    padding: 20px;    
+  }
 }
 </style>
+
+<script setup>
+  import { useRoute } from 'vue-router';
+  import AppHeader from './components/Header.vue'; 
+  
+
+  const route = useRoute();
+</script>
+
 

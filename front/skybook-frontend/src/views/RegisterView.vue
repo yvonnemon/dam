@@ -1,19 +1,102 @@
 <template>
-    <div class="register-container">
-      <h2>Create an Account</h2>
-      <form @submit.prevent="register">
+  <div class="register-container">
+    <h2>Create Your Account</h2>
+    <form @submit.prevent="register">
+      
         <input v-model="firstName" placeholder="First Name" required />
         <input v-model="lastName" placeholder="Last Name" required />
-        <input v-model="email" type="email" placeholder="Email" required />
-        <input v-model="password" type="password" placeholder="Password" required />
-        <input v-model="phone" placeholder="Phone" />
-        <input v-model="dni" placeholder="DNI" />
-        <button type="submit">Register</button>
-      </form>
-      <p v-if="error" class="error">{{ error }}</p>
-      <p v-if="success" class="success">{{ success }}</p>
-    </div>
-  </template>
+      
+      <input v-model="email" type="email" placeholder="Email" required />
+      <input v-model="password" type="password" placeholder="Password" required />
+      <input v-model="phone" placeholder="Phone (optional)" />
+      <input v-model="dni" placeholder="DNI (optional)" />
+      <button type="submit">Register</button>
+    </form>
+    <p v-if="error" class="message error">{{ error }}</p>
+    <p v-if="success" class="message success">{{ success }}</p>
+  </div>
+</template>
+
+<style scoped>
+  .register-container {
+    position: relative;
+    width: 75dvw;
+    margin: 80px auto;
+    /*padding: 32px;*/
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+  }
+
+  h2 {
+    text-align: center;
+    margin-bottom: 24px;
+    font-size: 24px;
+    color: #2c3e50;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .input-group {
+    display: flex;
+    gap: 12px;
+  }
+
+  .input-group input {
+    flex: 1;
+  }
+
+  input {
+    padding: 12px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    transition: border-color 0.3s;
+  }
+
+  input:focus {
+    border-color: #3498db;
+    outline: none;
+  }
+
+  button {
+    padding: 12px;
+    font-size: 16px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+
+  button:hover {
+    background-color: #2980b9;
+  }
+
+  .message {
+    text-align: center;
+    margin-top: 16px;
+    font-weight: 500;
+    font-size: 14px;
+  }
+
+  .error {
+    color: #e74c3c;
+  }
+
+  .success {
+    color: #2ecc71;
+  }
+</style>
+
   
   <script setup>
   import { ref } from 'vue';
@@ -53,37 +136,5 @@
     }
   };
   </script>
-  
-  <style scoped>
-  .register-container {
-    max-width: 400px;
-    margin: 80px auto;
-    padding: 20px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-  }
-  
-  input {
-    display: block;
-    margin: 10px 0;
-    width: 100%;
-    padding: 8px;
-  }
-  
-  button {
-    width: 100%;
-    padding: 10px;
-    margin-top: 10px;
-  }
-  
-  .error {
-    color: red;
-    margin-top: 10px;
-  }
-  
-  .success {
-    color: green;
-    margin-top: 10px;
-  }
-  </style>
+
   

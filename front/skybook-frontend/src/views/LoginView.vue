@@ -1,6 +1,6 @@
 <template>
     <div class="login-container">
-      <h2>Login</h2>
+      <h2>Skybook Login</h2>
       <form @submit.prevent="login" class="form">
         <div class="input-group">
           <label for="email">Email</label>
