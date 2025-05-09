@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 public class Plane {
 
     @Id
-    @Column(nullable = false)
+    @Column()
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -22,6 +22,8 @@ public class Plane {
     @Column(nullable = false)
     private String model;
 
+    @Column(nullable = false)
+    private Integer pilotNumber;
 
     public Long getId() {
         return id;
@@ -61,5 +63,13 @@ public class Plane {
 
     public void setModel(String model) {
         this.model = model;
+    }
+
+    public Integer getPilotNumber() {
+        return pilotNumber;
+    }
+
+    public void setPilotNumber(Integer pilotNumber) {
+        this.pilotNumber = pilotNumber;
     }
 }

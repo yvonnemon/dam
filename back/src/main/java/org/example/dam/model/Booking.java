@@ -8,7 +8,7 @@ import java.util.Date;
 public class Booking {
 
     @Id
-    @Column(nullable = false)
+    @Column()
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 

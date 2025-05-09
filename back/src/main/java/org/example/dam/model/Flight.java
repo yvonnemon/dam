@@ -2,36 +2,45 @@ package org.example.dam.model;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
 public class Flight {
-//TODO un commit para probar una cosa
+
     @Id
-    @Column(nullable = false)
+    @Column()
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
     private String flightNumber;
 
-    @Column(nullable = false)
-    private String origin;
+    @ManyToOne
+    @JoinColumn(name = "departure_airport_id")
+    private Airport departureAirport;
+
+    @ManyToOne
+    @JoinColumn(name = "destination_airport_id")
+    private Airport destinationAirport;
 
     @Column(nullable = false)
-    private String destination;
+    private LocalDateTime departure;
 
     @Column(nullable = false)
-    private Date departure;
-
-    @Column(nullable = false)
-    private Integer duration;
-
+    private Double duration;
 
     @OneToOne
     @JoinColumn(name = "plane_id")
     private Plane plane;
 
+/*
+*
+*
+*   GETTERS Y SETTERS
+*
+*
+* */
     public Plane getPlane() {
         return plane;
     }
@@ -56,35 +65,35 @@ public class Flight {
         this.flightNumber = flightNumber;
     }
 
-    public String getOrigin() {
-        return origin;
-    }
-
-    public void setOrigin(String origin) {
-        this.origin = origin;
-    }
-
-    public String getDestination() {
-        return destination;
-    }
-
-    public void setDestination(String destination) {
-        this.destination = destination;
-    }
-
-    public Date getDeparture() {
+    public LocalDateTime getDeparture() {
         return departure;
     }
 
-    public void setDeparture(Date departure) {
+    public void setDeparture(LocalDateTime departure) {
         this.departure = departure;
     }
 
-    public Integer getDuration() {
+    public Double getDuration() {
         return duration;
     }
 
-    public void setDuration(Integer duration) {
+    public void setDuration(Double duration) {
         this.duration = duration;
+    }
+
+    public Airport getDepartureAirport() {
+        return departureAirport;
+    }
+
+    public void setDepartureAirport(Airport departureAirport) {
+        this.departureAirport = departureAirport;
+    }
+
+    public Airport getDestinationAirport() {
+        return destinationAirport;
+    }
+
+    public void setDestinationAirport(Airport destinationAirport) {
+        this.destinationAirport = destinationAirport;
     }
 }

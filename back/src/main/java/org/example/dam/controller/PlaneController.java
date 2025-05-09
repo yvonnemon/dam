@@ -18,25 +18,25 @@ public class PlaneController {
     }
 
     @PostMapping
-    public ResponseEntity<Plane> createUser(@RequestBody Plane plane) {
+    public ResponseEntity<Plane> createPlane(@RequestBody Plane plane) {
         return ResponseEntity.ok(planeService.save(plane));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Plane> getUserById(@PathVariable Long id) {
+    public ResponseEntity<Plane> getPlaneById(@PathVariable Long id) {
         return planeService.findById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
 
-    @GetMapping("/planes")
-    public ResponseEntity<List<Plane>> getAllUsers() {
+    @GetMapping("/")
+    public ResponseEntity<List<Plane>> getAllPlanes() {
         return ResponseEntity.ok(planeService.findAll());
     }
 
-    @PutMapping("/planes/{id}")
-    public ResponseEntity<Plane> updateUser(@RequestBody Plane newPlane, @PathVariable Long id) {
+    @PutMapping("/{id}")
+    public ResponseEntity<Plane> updatePlane(@RequestBody Plane newPlane, @PathVariable Long id) {
         return ResponseEntity.ok(
                 planeService.findById(id)
                         .map(plane -> {
@@ -45,8 +45,6 @@ public class PlaneController {
                             plane.setModel(newPlane.getModel());
                             plane.setMaxRange(newPlane.getMaxRange());
 
-                            // TODO If dateOfBirth is a LocalDate or Date, uncomment this:
-                            // plane.setDateOfBirth(newUser.getDateOfBirth());
                             return planeService.save(plane);
                         })
                         .orElseGet(() -> {
@@ -57,7 +55,7 @@ public class PlaneController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+    public ResponseEntity<Void> deletePlane(@PathVariable Long id) {
         if (planeService.findById(id).isPresent()) {
             planeService.deleteById(id);
             return ResponseEntity.noContent().build();

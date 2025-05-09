@@ -1,8 +1,8 @@
 package org.example.dam.controller;
 
 import org.example.dam.dto.FlightResponseDTO;
-import org.example.dam.model.Flight;
-import org.example.dam.model.Flight;
+import org.example.dam.dto.FlightDTO;
+import org.example.dam.dto.FlightDTO;
 import org.example.dam.service.FlightService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,30 +21,30 @@ public class FlightController {
     }
 
     @PostMapping
-    public ResponseEntity<Flight> createFlight(Flight flight) {
+    public ResponseEntity<FlightDTO> createFlight(FlightDTO flight) {
         return ResponseEntity.ok(flightService.save(flight));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Flight> getFlightById(@PathVariable Long id) {
+    public ResponseEntity<FlightDTO> getFlightById(@PathVariable Long id) {
         return flightService.findById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/flights")
-    public ResponseEntity<List<Flight>> getAllFlights() {
+    public ResponseEntity<List<FlightDTO>> getAllFlights() {
         return ResponseEntity.ok(flightService.findAll());
     }
 
     @PutMapping("/flights/{id}")
-    public ResponseEntity<Flight> updateFlight(@RequestBody Flight newFlight, @PathVariable Long id) {
+    public ResponseEntity<FlightDTO> updateFlight(@RequestBody FlightDTO newFlight, @PathVariable Long id) {
         return ResponseEntity.ok(
                 flightService.findById(id)
                         .map(flight -> {
                             flight.setFlightNumber(newFlight.getFlightNumber());
-                            flight.setOrigin(newFlight.getOrigin());
-                            flight.setDestination(newFlight.getDestination());
+                            flight.setDepartureAirport(newFlight.getDepartureAirport());
+                            flight.setDestinationAirport(newFlight.getDestinationAirport());
                             //TODO
                             flight.setDeparture(newFlight.getDeparture());
                             flight.setDuration(newFlight.getDuration());

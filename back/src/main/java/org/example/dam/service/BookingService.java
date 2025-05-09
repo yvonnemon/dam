@@ -24,7 +24,6 @@ public class BookingService {
         return bookingRepository.findById(id);
     }
 
-    //TODO update y create?
     public Booking save(Booking user) {
         return bookingRepository.save(user);
     }
