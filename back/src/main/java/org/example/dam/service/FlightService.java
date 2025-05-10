@@ -8,10 +8,12 @@ import org.example.dam.repository.AirportRepository;
 import org.example.dam.repository.FlightRepository;
 import org.example.dam.repository.PlaneRepository;
 import org.example.dam.util.Util;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class FlightService {
@@ -26,38 +28,71 @@ public class FlightService {
         this.planeRepository = planeRepository;
     }
 
-    public List<Flight> findAll() {
-        return flightRepository.findAll();
+    public List<FlightDTO> findAll() {
+
+        List<FlightDTO> flights = new ArrayList<>();
+        for (Flight flight : flightRepository.findAll()) {
+            flights.add(entityToDto(flight));
+        }
+
+        return flights;
     }
 
-    public Optional<Flight> findById(Long id) {
-        return flightRepository.findById(id);
+    public FlightDTO findById(Long id) {
+        return entityToDto(flightRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Flight not found")));
     }
 
-    public Flight save(FlightDTO flight) {
-        Flight newFlight = new Flight();
-
-
-        Airport departure = airportRepository.findById(flight.getDepartureId())
-                .orElseThrow(() -> new RuntimeException("Invalid departure airport"));
-
-        Airport destination = airportRepository.findById(flight.getDestinationId())
-                .orElseThrow(() -> new RuntimeException("Invalid destination airport"));
-
-        newFlight.setDepartureAirport(departure);
-        newFlight.setDestinationAirport(destination);
-        newFlight.setDeparture(flight.getDepartureDate());
-        double disntance = Util.getDistanceFromLatLonInKm(departure.getLatitude(), departure.getLongitude(), destination.getLatitude(), destination.getLongitude());
-        newFlight.setDuration( disntance/750.0 ); //750 km/h es la velocidad media de crucero de un jet privado
-        Plane plane = planeRepository.findById(flight.getModelId())
-                .orElseThrow(() -> new RuntimeException("Invalid destination airport"));
-        newFlight.setPlane(plane);
-
-        return flightRepository.save(newFlight);
+    public FlightDTO save(FlightDTO flight) {
+        return entityToDto(flightRepository.save(dtoToEntity(flight)));
     }
 
     //TODO tiene que returnear algo
     public void delete(Long flight) {
         flightRepository.deleteById(flight);
+    }
+
+    private Flight dtoToEntity(FlightDTO dto) {
+        Flight flight = new Flight();
+        Airport departure = airportRepository.findById(dto.getDepartureId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Airport not found"));
+
+        Airport destination = airportRepository.findById(dto.getDestinationId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Airport not found"));
+
+        flight.setDepartureAirport(departure);
+        flight.setDestinationAirport(destination);
+        flight.setDepartureDate(dto.getDepartureDate());
+
+        //THINK
+        flight.setFlightNumber("SB"+dto.getDepartureDate().toString());
+
+        double disntance = Util.getDistanceFromLatLonInKm(departure.getLatitude(), departure.getLongitude(), destination.getLatitude(), destination.getLongitude());
+        flight.setDuration( disntance/750.0 ); //750 km/h es la velocidad media de crucero de un jet privado
+        Plane plane = planeRepository.findById(dto.getModelId())
+                .orElseThrow(() -> new RuntimeException("Invalid destination airport"));
+        flight.setPlane(plane);
+
+        return flight;
+    }
+
+    private FlightDTO entityToDto(Flight entity) {
+        FlightDTO dto = new FlightDTO();
+
+        dto.setId(entity.getId());
+        dto.setModelId(entity.getPlane().getId());
+        dto.setModelName(entity.getPlane().getName());
+        dto.setSeatsTotal(entity.getPlane().getCapacity()); //TODO
+        dto.setSeatsAvailable(entity.getPlane().getCapacity()-entity.getSeatsReserved());
+
+        dto.setDepartureId(entity.getDepartureAirport().getId());
+        dto.setDestinationId(entity.getDestinationAirport().getId());
+        dto.setDepartureName(entity.getDepartureAirport().getName());
+        dto.setDestinationName(entity.getDestinationAirport().getName());
+        dto.setDepartureIata(entity.getDepartureAirport().getIata());
+        dto.setDestinationIata(entity.getDestinationAirport().getIata());
+
+        dto.setFlightNumber(entity.getFlightNumber());
+        dto.setDepartureDate(entity.getDepartureDate());
+        return dto;
     }
 }

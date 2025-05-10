@@ -7,18 +7,19 @@
       <form @submit.prevent="createFlight">
         <div class="form-grid">
           <!--TODO placeholder-->
-          <select v-model="selectedDeparture" placeholder="Departure">
-            
+          <select v-model="newFlight.departureId" placeholder="Departure">
+            <option value="" disabled selected>Choose a departure airport</option>
             <option v-for="airport in airports" :value="airport.id">
               {{ airport.name }}
             </option>
           </select>
-          <select v-model="selectedDestination">
+          <select v-model="newFlight.destinationId" placeholder="Destination">
+             <option value="" disabled selected>Choose a destination airport</option>
             <option v-for="airport in airports" :value="airport.id">
               {{ airport.name }}
             </option>
           </select>
-          <select v-model="planeModel" placeholder="Departure">
+          <select v-model="newFlight.modelId" placeholder="Date">
             <option v-for="plane in planes" :value="plane.id">
               {{ plane.name }}
             </option>
@@ -40,16 +41,21 @@
               <th>Destination</th>
               <th>Date</th>
               <th>Model</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="flight in flights" :key="flight.id">
-              <td>{{ flight.departureAirport.name }} - {{ flight.departureAirport.iata }}</td>
+              <td>{{ flight.departureName }} - {{ flight.departureIata }}</td>
 
-              <td>{{ flight.destinationAirport.name }} - {{ flight.destinationAirport.iata }}</td>
+              <td>{{ flight.destinationName }} - {{ flight.destinationIata }}</td>
 
-              <td>{{ formatDate(flight.departure) }}</td>
-              <td>{{ flight.plane.name }}</td>
+              <td>{{ formatDate(flight.departureDate) }}</td>
+              <td>{{ flight.modelName }}</td>
+              <td>
+                
+                <button @click="deleteFlight(flight.id)">Delete</button>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -203,23 +209,61 @@
   const airports = ref([]);
   const planes = ref([]);
 
-  const newFlight = ref({
-    destination: '',
-    model: '',
-    departureDate: '',
-    seatsTotal: ''
-  });
   const message = ref('');
+
+  const newFlight = ref({
+    departureId: '',
+    destinationId: '',
+    departureDate: '',
+    modelId: '',
+  });
+  
+  const createFlight = async () => {
+    try {
+      await api.post('/flights', {
+        ...newFlight.value,
+      }); 
+
+      message.value = 'Flight created successfully!';
+      newFlight.value = { destination: '', model: '', departureDate: '', seatsTotal: 4 };
+      fetchFlights();
+    } catch (err) {
+      message.value = 'Error creating flight.';
+    }
+  };
+
+  const deleteFlight = async (flightId) => {
+    try {
+      await api.delete(`/flights/${flightId}`);
+
+      message.value = 'Flight deleted successfully!';
+      fetchFlights(); // Refresh the list after deletion
+    } catch (err) {
+      message.value = 'Error deleting flight.';
+    }
+  };
+
+
+  onMounted(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    }
+    fetchFlights();
+    //fetchBookings();
+    fetchAirports();
+    fetchPlanes();
+  });
 
   const fetchFlights = async () => {
     const res = await api.get('/flights/flights');
     flights.value = res.data;
   };
 
-  const fetchBookings = async () => {
+  /*const fetchBookings = async () => {
     const res = await api.get('/admin/bookings'); // Make sure this endpoint exists and is admin-only
     bookings.value = res.data;
-  };
+  };*/
 
   const fetchAirports = async () => {
     const res = await api.get('/airports/');
@@ -231,21 +275,7 @@
     planes.value = res.data;
   };
 
-  const createFlight = async () => {
-    try {
-      const res = await api.post('/flights', {
-        ...newFlight.value,
-        seatsAvailable: newFlight.value.seatsTotal
-      });
-      message.value = 'Flight created successfully!';
-      newFlight.value = { destination: '', model: '', departureDate: '', seatsTotal: 4 };
-      fetchFlights();
-    } catch (err) {
-      message.value = 'Error creating flight.';
-    }
-  };
-
-  const formatDate = (d) => {
+    const formatDate = (d) => {
     const date = new Date(d);
     const day = String(date.getDate()).padStart(2, '0'); // Add leading zero
     const month = String(date.getMonth() + 1).padStart(2, '0'); // Add leading zero, month starts at 0
@@ -256,14 +286,4 @@
     return `${day}-${month}-${year} ${hours}:${minutes}`;
   };
 
-  onMounted(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-    }
-    fetchFlights();
-    fetchBookings();
-    fetchAirports();
-    fetchPlanes();
-  });
 </script>

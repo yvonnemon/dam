@@ -2,8 +2,8 @@ package org.example.dam.model;
 
 import jakarta.persistence.*;
 
-import java.time.LocalDateTime;
-import java.util.Date;
+import java.time.LocalDate;
+
 
 @Entity
 public class Flight {
@@ -16,6 +16,9 @@ public class Flight {
     @Column(nullable = false)
     private String flightNumber;
 
+    @Column(nullable = false)
+    private Integer seatsReserved = 0;
+
     @ManyToOne
     @JoinColumn(name = "departure_airport_id")
     private Airport departureAirport;
@@ -25,7 +28,7 @@ public class Flight {
     private Airport destinationAirport;
 
     @Column(nullable = false)
-    private LocalDateTime departure;
+    private LocalDate departureDate;
 
     @Column(nullable = false)
     private Double duration;
@@ -49,6 +52,14 @@ public class Flight {
         this.plane = plane;
     }
 
+    public Integer getSeatsReserved() {
+        return seatsReserved;
+    }
+
+    public void setSeatsReserved(Integer seatsReserved) {
+        this.seatsReserved = seatsReserved;
+    }
+
     public Long getId() {
         return id;
     }
@@ -65,12 +76,12 @@ public class Flight {
         this.flightNumber = flightNumber;
     }
 
-    public LocalDateTime getDeparture() {
-        return departure;
+    public LocalDate getDepartureDate() {
+        return departureDate;
     }
 
-    public void setDeparture(LocalDateTime departure) {
-        this.departure = departure;
+    public void setDepartureDate(LocalDate departure) {
+        this.departureDate = departure;
     }
 
     public Double getDuration() {

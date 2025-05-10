@@ -1,21 +1,25 @@
 package org.example.dam.dto;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class FlightDTO {
 
     private Long id;
+    private String flightNumber;
     private Long modelId;
+    private String modelName;
     private int seatsTotal;
     private int seatsAvailable;
-    private LocalDateTime departureDate;
+    private LocalDate departureDate;
 
     private Long departureId;     // ID of departure airport
     private Long destinationId;   // ID of destination airport
 
     private String destinationName; // Optional: airport name for frontend display
     private String departureName;
-
+    private String departureIata;
+    private String destinationIata;
 
     public Long getId() {
         return id;
@@ -25,12 +29,44 @@ public class FlightDTO {
         this.id = id;
     }
 
+    public String getFlightNumber() {
+        return flightNumber;
+    }
+
+    public void setFlightNumber(String flightNumber) {
+        this.flightNumber = flightNumber;
+    }
+
     public Long getModelId() {
         return modelId;
     }
 
     public void setModelId(Long modelId) {
         this.modelId = modelId;
+    }
+
+    public String getDepartureIata() {
+        return departureIata;
+    }
+
+    public void setDepartureIata(String departureIata) {
+        this.departureIata = departureIata;
+    }
+
+    public String getDestinationIata() {
+        return destinationIata;
+    }
+
+    public void setDestinationIata(String destinationIata) {
+        this.destinationIata = destinationIata;
+    }
+
+    public String getModelName() {
+        return modelName;
+    }
+
+    public void setModelName(String modelName) {
+        this.modelName = modelName;
     }
 
     public int getSeatsTotal() {
@@ -49,11 +85,11 @@ public class FlightDTO {
         this.seatsAvailable = seatsAvailable;
     }
 
-    public LocalDateTime getDepartureDate() {
+    public LocalDate getDepartureDate() {
         return departureDate;
     }
 
-    public void setDepartureDate(LocalDateTime departureDate) {
+    public void setDepartureDate(LocalDate departureDate) {
         this.departureDate = departureDate;
     }
 
