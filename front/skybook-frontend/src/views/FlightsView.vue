@@ -1,21 +1,21 @@
 <template>
-  <div class="flights-view">
-    <h2>Available Flights</h2>
+  <div class="book-flight-view">
+    <h2>Book a Flight</h2>
 
-    <div v-if="loading" class="status-text">Loading flights...</div>
-    <div v-else-if="flights.length === 0" class="status-text">No flights found.</div>
+    <div v-if="loading" class="loading-message">Loading available flights...</div>
+    <div v-else-if="flights.length === 0" class="no-flights">No flights available at the moment.</div>
 
-    <div class="flights-list">
+    <div class="flight-list">
       <div v-for="flight in flights" :key="flight.id" class="flight-card">
-        <h3>{{ flight.destination }}</h3>
-        <p><strong>Model:</strong> {{ flight.model }}</p>
-        <p><strong>Date:</strong> {{ formatDate(flight.departureDate) }}</p>
-        <p><strong>Available Seats:</strong> {{ flight.seatsAvailable }}</p>
-        <button
-          @click="bookFlight(flight.id)"
-          :disabled="flight.seatsAvailable <= 0"
-        >
-          {{ flight.seatsAvailable <= 0 ? 'Full' : 'Book' }}
+        <div class="card-header">
+          <h3>{{ flight.departureName }} &rarr; {{ flight.destinationName }}</h3>
+          <p class="date">{{ formatDate(flight.departureDate) }}</p>
+        </div>
+        <div class="card-body">
+          <p><strong>Seats:</strong> {{ flight.seatsAvailable }} / {{ flight.seatsTotal }}</p>
+        </div>
+        <button @click="bookFlight(flight.id)" :disabled="flight.seatsAvailable <= 0">
+          Book Now
         </button>
       </div>
     </div>
@@ -25,127 +25,133 @@
 </template>
 
 <style scoped>
-  .flights-view {
-    max-width: 1000px;
+.book-flight-view {
+    max-width: 960px;
     margin: 0 auto;
-    padding: 30px 20px;
-    text-align: center;
+    padding: 24px;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     color: #333;
-  }
+    background-color: #ebfbff;
+}
 
-  h2 {
-    margin-bottom: 24px;
-    font-size: 28px;
-    color: #2c3e50;
-  }
+h2 {
+  font-size: 28px;
+  color: #2c3e50;
+  margin-bottom: 20px;
+}
 
-  .status-text {
-    font-size: 16px;
-    color: #666;
-    margin: 20px 0;
-  }
+.loading-message, .no-flights {
+  font-size: 18px;
+  color: #d3f5ff;
+}
 
-  .flights-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 24px;
-    margin-top: 20px;
-  }
+.flight-list {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  margin-top: 30px;
+}
 
-  .flight-card {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
-    text-align: left;
-    transition: transform 0.2s;
-  }
+.flight-card {
+  background-color: #ffffff;
+  border: 1px solid #ecf0f1;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
 
-  .flight-card:hover {
-    transform: translateY(-4px);
-  }
+.flight-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
 
-  .flight-card h3 {
-    font-size: 20px;
-    margin-bottom: 10px;
-    color: #1e90ff;
-  }
+.card-header {
+  margin-bottom: 15px;
+}
 
-  .flight-card p {
-    margin: 6px 0;
-  }
+.card-header h3 {
+  font-size: 22px;
+  color: #0559a3;
+  margin: 0;
+}
 
-  button {
-    margin-top: 12px;
-    padding: 10px 16px;
-    font-size: 14px;
-    font-weight: bold;
-    border: none;
-    border-radius: 6px;
-    background-color: #1e90ff;
-    color: white;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
+.date {
+  font-size: 14px;
+  color: #7f8c8d;
+  margin: 5px 0;
+}
 
-  button:hover {
-    background-color: #187bcd;
-  }
+.card-body {
+  margin-bottom: 20px;
+}
 
-  button:disabled {
-    background-color: #aaa;
-    cursor: not-allowed;
-  }
+button {
+  padding: 10px 20px;
+  background-color: #0066d0;
+  color: white;
+  border: none;
+  border-radius: 25px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
 
-  .message {
-    margin-top: 30px;
-    font-size: 16px;
-    color: #2ecc71;
-    font-weight: 500;
-  }
+button:hover {
+  background-color: #0559a3;
+}
+
+button:disabled {
+  background-color: #bdc3c7;
+  cursor: not-allowed;
+}
+
+.message {
+  margin-top: 30px;
+  font-size: 18px;
+  color: #3dd5ff;
+  font-weight: bold;
+}
 </style>
 
-  
-  <script setup>
-  import { ref, onMounted } from 'vue';
-  import api from '../services/api';
-  
-  const flights = ref([]);
-  const loading = ref(true);
-  const message = ref('');
-  
-  const fetchFlights = async () => {
-    try {
-      const res = await api.get('/flights');
-      flights.value = res.data;
-    } catch (err) {
-      message.value = 'Failed to load flights.';
-    } finally {
-      loading.value = false;
-    }
-  };
-  
-  const bookFlight = async (flightId) => {
-    try {
-      const res = await api.post('/bookings', { flightId });
-      message.value = 'Booking successful!';
-      await fetchFlights(); // Refresh available seats
-    } catch (err) {
-      message.value = 'Booking failed. You may already be booked or unauthorized.';
-    }
-  };
-  
-  const formatDate = (dateStr) => {
-    return new Date(dateStr).toLocaleString();
-  };
-  
-  onMounted(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-    }
-    fetchFlights();
-  });
-  </script>
-  
+
+<script setup>
+import { ref, onMounted } from 'vue';
+import api from '../services/api';
+
+const flights = ref([]);
+const loading = ref(true);
+const message = ref('');
+
+const fetchFlights = async () => {
+  try {
+    const res = await api.get('/flights/' );
+    flights.value = res.data;
+  } catch (err) {
+    message.value = 'Failed to load flights.';
+  } finally {
+    loading.value = false;
+  }
+};
+
+const bookFlight = async (flightId) => {
+  try {
+    await api.post('/bookings', { flightId });
+    message.value = 'Booking successful!';
+    await fetchFlights(); // Refresh availability
+  } catch (err) {
+    message.value = 'Could not book flight. Are you already booked?';
+  }
+};
+
+const formatDate = (d) => new Date(d).toLocaleString();
+
+onMounted(() => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+  }
+  fetchFlights();
+});
+</script>
+

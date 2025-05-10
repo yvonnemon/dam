@@ -30,7 +30,7 @@ public class FlightController {
         return ResponseEntity.ok(flightService.findById(id));
     }
 
-    @GetMapping("/flights")
+    @GetMapping("/")
     public ResponseEntity<List<FlightDTO>> getAllFlights() {
         return ResponseEntity.ok(flightService.findAll());
     }

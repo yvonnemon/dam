@@ -9,6 +9,19 @@
 </template>
 
 <style scoped>
+/*
+#ebfbff
+#d3f5ff
+#b1eeff
+#7be8ff
+#3dd5ff
+#10b9ff
+#0097ff
+#007fff
+#0066d0
+#0559a3
+#0a3b6c
+*/
 .layout {
   display: flex;
   flex-direction: column;

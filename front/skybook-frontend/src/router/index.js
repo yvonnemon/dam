@@ -3,10 +3,12 @@ import LoginView from '../views/LoginView.vue';
 import FlightsView from '../views/FlightsView.vue';
 import AdminPanel from '../views/AdminPanel.vue';
 import RegisterView from '../views/RegisterView.vue';
+import BookingView from '../views/BookingView.vue';
 
 const routes = [
   { path: '/', redirect: '/login' },
   { path: '/login', component: LoginView },
+  { path: '/bookings', component: BookingView },
   { path: '/flights', component: FlightsView },
   { path: '/admin', component: AdminPanel },
   { path: '/register', component: RegisterView }

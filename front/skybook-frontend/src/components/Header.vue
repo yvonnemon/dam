@@ -12,7 +12,7 @@
   
   <style scoped>
   .site-header {
-    background-color: #1e90ff;
+    background-color: #0a3b6c;
     color: white;
     display: flex;
     justify-content: space-between;

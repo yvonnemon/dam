@@ -1,5 +1,6 @@
 package org.example.dam.controller;
 
+import org.example.dam.dto.UserDTO;
 import org.example.dam.model.User;
 import org.example.dam.service.UserService;
 import org.springframework.http.ResponseEntity;
@@ -33,49 +34,31 @@ public class UserController {
 
     //TODO move to /auth
     @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody User user) {
+    public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO user) {
         return ResponseEntity.ok(userService.save(user));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable Long id) {
-        return userService.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<UserDTO> getUserById(@PathVariable Long id) {
+        return ResponseEntity.ok(userService.findById(id));
+
+
     }
 
 
     @GetMapping("/users")
-    public ResponseEntity<List<User>> getAllUsers() {
+    public ResponseEntity<List<UserDTO>> getAllUsers() {
         return ResponseEntity.ok(userService.findAll());
     }
 
     @PutMapping("/users/{id}")
-    public ResponseEntity<User> updateUser(@RequestBody User newUser, @PathVariable Long id) {
-        return ResponseEntity.ok(
-                userService.findById(id)
-                        .map(user -> {
-                            user.setFirstName(newUser.getFirstName());
-                            user.setLastName(newUser.getLastName());
-                            user.setEmail(newUser.getEmail());
-                            user.setPassword(newUser.getPassword());
-                            user.setRole(newUser.getRole());
-                            user.setPhone(newUser.getPhone());
-                            user.setDni(newUser.getDni());
-                            // TODO If dateOfBirth is a LocalDate or Date, uncomment this:
-                            // user.setDateOfBirth(newUser.getDateOfBirth());
-                            return userService.save(user);
-                        })
-                        .orElseGet(() -> {
-                            newUser.setId(id); // optional: set ID manually
-                            return userService.save(newUser);
-                        })
-        );
+    public ResponseEntity<UserDTO> updateUser(@RequestBody User newUser, @PathVariable Long id) {
+        return ResponseEntity.ok(userService.findById(id));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
-        if (userService.findById(id).isPresent()) {
+        if (userService.findById(id) != null) {
             userService.deleteById(id);
             return ResponseEntity.noContent().build();
         } else {

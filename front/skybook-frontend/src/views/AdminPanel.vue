@@ -256,7 +256,7 @@
   });
 
   const fetchFlights = async () => {
-    const res = await api.get('/flights/flights');
+    const res = await api.get('/flights/');
     flights.value = res.data;
   };
 
