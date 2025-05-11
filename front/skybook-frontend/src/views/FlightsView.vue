@@ -125,7 +125,7 @@ const message = ref('');
 
 const newBooking = ref({
   flightId: '',
-  
+  datePurchase: new Date(),
 })
 
 const fetchFlights = async () => {
@@ -140,9 +140,14 @@ const fetchFlights = async () => {
 };
 
 const bookFlight = async (flightId) => {
+  newBooking.value.flightId = flightId;
   try {
-    await api.post('/bookings', { flightId });
+    await api.post('/bookings', { ...newBooking.value });
     message.value = 'Booking successful!';
+    newBooking.value = {
+      flightId: '',
+      datePurchase: new Date()
+    };
     await fetchFlights(); // Refresh availability
   } catch (err) {
     message.value = 'Could not book flight. Are you already booked?';

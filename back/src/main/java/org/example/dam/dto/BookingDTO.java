@@ -22,7 +22,7 @@ public class BookingDTO {
     private User user;
 
     private Flight flight;
-    private Integer flightId;
+    private Long flightId;
 
     public Long getId() {
         return id;
@@ -56,11 +56,11 @@ public class BookingDTO {
         this.price = price;
     }
 
-    public Integer getFlightId() {
+    public Long getFlightId() {
         return flightId;
     }
 
-    public void setFlightId(Integer flightId) {
+    public void setFlightId(Long flightId) {
         this.flightId = flightId;
     }
 

@@ -3,6 +3,7 @@ package org.example.dam.controller;
 import org.example.dam.dto.UserDTO;
 import org.example.dam.model.Role;
 import org.example.dam.model.User;
+import org.example.dam.repository.UserRepository;
 import org.example.dam.security.JwtUtils;
 import org.example.dam.service.UserService;
 import org.example.dam.dto.LoginRequestDTO;
@@ -13,6 +14,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,11 +25,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     private final UserService userService;
+    private final UserRepository userRepo;
     private final AuthenticationManager authenticationManager;
     private final JwtUtils jwtTokenService;
 
-    public AuthController(UserService userService, AuthenticationManager authenticationManager, JwtUtils jwtTokenService) {
+    public AuthController(UserService userService, UserRepository userRepo, AuthenticationManager authenticationManager, JwtUtils jwtTokenService) {
         this.userService = userService;
+        this.userRepo = userRepo;
         this.authenticationManager = authenticationManager;
         this.jwtTokenService = jwtTokenService;
     }
@@ -39,7 +43,10 @@ public class AuthController {
                 new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
         );
 
-        String token = jwtTokenService.generateToken((UserDetails) auth.getPrincipal());
+        User user = userRepo.findByEmail(request.getEmail())
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        String token = jwtTokenService.generateToken(user); // full user
         return ResponseEntity.ok(new TokenResponseDTO(token));
     }
 

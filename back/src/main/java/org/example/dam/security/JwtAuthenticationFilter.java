@@ -51,7 +51,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             email = jwtUtils.extractEmail(jwt);
         } catch (Exception e) {
-            System.out.println("❌ Failed to extract email from token: " + e.getMessage());
+            System.out.println("Failed to extract email from token: " + e.getMessage());
             filterChain.doFilter(request, response); // Allow request to fail naturally (403)
             return;
         }
