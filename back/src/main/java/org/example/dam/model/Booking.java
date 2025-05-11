@@ -2,7 +2,7 @@ package org.example.dam.model;
 
 import jakarta.persistence.*;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @Entity
 public class Booking {
@@ -13,22 +13,21 @@ public class Booking {
     private Long id;
 
     @Column(nullable = false, unique = true)
-    private Integer number;
+    private String bookingNumber;
 
     @Column(nullable = false)
-    private Date datePurchase;
+    private LocalDate datePurchase;
 
     @Column(nullable = false)
     private Double price;
 
-    //TODO
     @Column(nullable = false)
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private BookingStatus status;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
-
 
     @OneToOne
     @JoinColumn(name = "flight_id")
@@ -58,20 +57,12 @@ public class Booking {
         this.id = id;
     }
 
-    public Integer getNumber() {
-        return number;
+    public String getBookingNumber() {
+        return bookingNumber;
     }
 
-    public void setNumber(Integer number) {
-        this.number = number;
-    }
-
-    public Date getDatePurchase() {
-        return datePurchase;
-    }
-
-    public void setDatePurchase(Date datePurchase) {
-        this.datePurchase = datePurchase;
+    public void setBookingNumber(String number) {
+        this.bookingNumber = number;
     }
 
     public Double getPrice() {
@@ -82,11 +73,19 @@ public class Booking {
         this.price = price;
     }
 
-    public String getStatus() {
+    public BookingStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(BookingStatus status) {
         this.status = status;
+    }
+
+    public LocalDate getDatePurchase() {
+        return datePurchase;
+    }
+
+    public void setDatePurchase(LocalDate datePurchase) {
+        this.datePurchase = datePurchase;
     }
 }

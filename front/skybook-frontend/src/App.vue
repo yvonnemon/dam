@@ -21,6 +21,7 @@
 #0066d0
 #0559a3
 #0a3b6c
+#04386c
 */
 .layout {
   display: flex;

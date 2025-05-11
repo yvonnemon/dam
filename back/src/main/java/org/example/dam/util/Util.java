@@ -1,6 +1,8 @@
 package org.example.dam.util;
 
 
+import java.util.Random;
+
 public class Util {
 
     public static double getDistanceFromLatLonInKm(double lat1, double lon1, double lat2, double lon2) {
@@ -20,5 +22,18 @@ public class Util {
 
     private static double deg2rad(double deg) {
         return deg * (Math.PI / 180);
+    }
+
+    public static String getSaltString() {
+        String SALTCHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+        StringBuilder salt = new StringBuilder();
+        Random rnd = new Random();
+        while (salt.length() < 8) { // length of the random string.
+            int index = (int) (rnd.nextFloat() * SALTCHARS.length());
+            salt.append(SALTCHARS.charAt(index));
+        }
+        String saltStr = salt.toString();
+        return saltStr;
+
     }
 }

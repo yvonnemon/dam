@@ -123,6 +123,11 @@ const flights = ref([]);
 const loading = ref(true);
 const message = ref('');
 
+const newBooking = ref({
+  flightId: '',
+  
+})
+
 const fetchFlights = async () => {
   try {
     const res = await api.get('/flights/' );

@@ -12,6 +12,7 @@ public class FlightDTO {
     private int seatsTotal;
     private int seatsAvailable;
     private LocalDate departureDate;
+    private Double duration;
 
     private Long departureId;     // ID of departure airport
     private Long destinationId;   // ID of destination airport
@@ -123,5 +124,13 @@ public class FlightDTO {
 
     public void setDepartureName(String departureName) {
         this.departureName = departureName;
+    }
+
+    public Double getDuration() {
+        return duration;
+    }
+
+    public void setDuration(Double duration) {
+        this.duration = duration;
     }
 }

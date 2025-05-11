@@ -1,9 +1,8 @@
 package org.example.dam.controller;
 
-import org.example.dam.model.Booking;
+import org.example.dam.dto.BookingDTO;
 import org.example.dam.model.Booking;
 import org.example.dam.service.BookingService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,51 +19,29 @@ public class BookingController {
     }
 
     @PostMapping
-    public ResponseEntity<Booking> createUser(@RequestBody Booking user) {
-        return ResponseEntity.ok(bookingService.save(user));
+    public ResponseEntity<BookingDTO> createBooking(@RequestBody BookingDTO booking) {
+        return ResponseEntity.ok(bookingService.save(booking));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Booking> getUserById(@PathVariable Long id) {
-        return bookingService.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<BookingDTO> getBookingById(@PathVariable Long id) {
+        return ResponseEntity.ok(bookingService.findById(id));
     }
 
 
-    @GetMapping("/users")
-    public ResponseEntity<List<Booking>> getAllUsers() {
+    @GetMapping("/")
+    public ResponseEntity<List<BookingDTO>> getAllBookings() {
         return ResponseEntity.ok(bookingService.findAll());
     }
 
-    @PutMapping("/users/{id}")
-    public ResponseEntity<Booking> updateUser(@RequestBody Booking newBoking, @PathVariable Long id) {
-        return ResponseEntity.ok(
-                bookingService.findById(id)
-                        .map(booking -> {
-                            booking.setNumber(newBoking.getNumber());
-                            booking.setDatePurchase(newBoking.getDatePurchase());
-                            booking.setPrice(newBoking.getPrice());
-                            booking.setStatus(newBoking.getStatus());
-
-                            //TODO relations
-                            booking.setUser(newBoking.getUser());
-                            booking.setFlight(newBoking.getFlight());
-
-                            // TODO If dateOfBirth is a LocalDate or Date, uncomment this:
-                            // user.setDateOfBirth(newBoking.getDateOfBirth());
-                            return bookingService.save(booking);
-                        })
-                        .orElseGet(() -> {
-                            newBoking.setId(id); // optional: set ID manually
-                            return bookingService.save(newBoking);
-                        })
-        );
+    @PutMapping("/booking/{id}")
+    public ResponseEntity<BookingDTO> updateBooking(@RequestBody BookingDTO newBoking, @PathVariable Long id) {
+        return ResponseEntity.ok(bookingService.save(newBoking));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
-        if (bookingService.findById(id).isPresent()) {
+    public ResponseEntity<Void> deleteBooking(@PathVariable Long id) {
+        if (bookingService.findById(id) != null) {
             bookingService.deleteById(id);
             return ResponseEntity.noContent().build();
         } else {
