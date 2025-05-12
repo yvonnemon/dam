@@ -28,6 +28,12 @@ public class BookingController {
         return ResponseEntity.ok(bookingService.findById(id));
     }
 
+    @GetMapping("/user")
+    public ResponseEntity<List<BookingDTO>> getAllFromUser() {
+        List<BookingDTO> asd = bookingService.findAllFromUser();
+        int a = asd.size();
+        return ResponseEntity.ok(asd);
+    }
 
     @GetMapping("/")
     public ResponseEntity<List<BookingDTO>> getAllBookings() {

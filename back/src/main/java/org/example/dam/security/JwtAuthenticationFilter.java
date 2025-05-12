@@ -46,8 +46,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         jwt = authHeader.substring(7);
-        /*email = jwtUtils.extractEmail(jwt);*/
-
+       /* email = jwtUtils.extractEmail(jwt);
+*/
         try {
             email = jwtUtils.extractEmail(jwt);
         } catch (Exception e) {

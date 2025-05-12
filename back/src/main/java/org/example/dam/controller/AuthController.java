@@ -57,7 +57,7 @@ public class AuthController {
                     .body("User already exists with this email");
         }
 
-        userService.save(request); // You need to implement this (see below)
+        userService.save(request, false);
         return ResponseEntity.ok("User registered successfully");
     }
 

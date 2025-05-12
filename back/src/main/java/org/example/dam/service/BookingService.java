@@ -1,5 +1,6 @@
 package org.example.dam.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.example.dam.dto.BookingDTO;
 import org.example.dam.model.Booking;
 import org.example.dam.model.BookingStatus;
@@ -9,6 +10,7 @@ import org.example.dam.repository.BookingRepository;
 import org.example.dam.repository.FlightRepository;
 import org.example.dam.repository.UserRepository;
 import org.example.dam.util.Util;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -42,26 +44,65 @@ public class BookingService {
         return bookings;
     }
 
+    public List<BookingDTO> findAllFromUser() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        List<BookingDTO> bookings = new ArrayList<>();
+        for (Booking booking : bookingRepository.findBookingsByUser(user)) {
+            BookingDTO bookingDTO = entityToDto(booking);
+            bookingDTO.setUser(null);
+            bookings.add(bookingDTO);
+        }
+
+        return bookings;
+    }
+
+
     public BookingDTO findById(Long id) {
-        return entityToDto( bookingRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Flight not found")));
+        return entityToDto(bookingRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Booking not found")));
     }
 
     public BookingDTO save(BookingDTO booking) {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName(); //TODO
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
 
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
         booking.setUser(user);
-        if(booking.getId() == null) {
+
+        if (booking.getId() == null) {
             booking.setStatus(BookingStatus.BOOKED);
+            Flight flight = flightRepository.findById(booking.getFlightId())
+                    .orElseThrow(() -> new EntityNotFoundException("Flight not found"));
+
+            Booking bookingEntity = dtoToEntity(booking);
+
+            try {
+                bookingEntity = bookingRepository.save(bookingEntity); // Try to insert
+            } catch (DataIntegrityViolationException ex) {
+                // Booking insert failed, flight should not be updated
+                throw new RuntimeException("Booking failed: " + ex.getMessage(), ex);
+            }
+
+            // Now it's safe to update the flight
+            flight.setSeatsReserved(flight.getSeatsReserved() + 1);
+            flightRepository.save(flight);
+
+            return entityToDto(bookingEntity);
+
         } else {
-            booking.setStatus(BookingStatus.MODIFIED);
+            booking.setStatus(BookingStatus.CANCELLED);
+            return entityToDto(bookingRepository.save(dtoToEntity(booking)));
         }
-        return entityToDto(bookingRepository.save(dtoToEntity(booking)));
     }
 
     public void deleteById(Long id) {
-        bookingRepository.deleteById(id);
+        Booking b = bookingRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Booking not found"));
+        b.setStatus(BookingStatus.CANCELLED);
+        bookingRepository.save(b);
+        //bookingRepository.deleteById(id);
     }
 
     private Booking dtoToEntity(BookingDTO dto) {
@@ -69,10 +110,10 @@ public class BookingService {
         booking.setId(dto.getId());
         Flight flight = flightRepository.findById(dto.getFlightId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Flight not found"));
         booking.setFlight(flight);
-        if(dto.getId() == null) { //si no tiene id es nuevo
+        if (dto.getId() == null) { //si no tiene id es nuevo
 
             booking.setBookingNumber(generateUniqueBookingCode());
-            booking.setPrice( flight.getDuration() * 5000); //5000 dineros por hora
+            booking.setPrice(flight.getDuration() * 5000); //5000 dineros por hora
         } else {
             booking.setBookingNumber(dto.getNumber());
             booking.setPrice(dto.getPrice());
@@ -91,8 +132,8 @@ public class BookingService {
 
         BookingDTO dto = new BookingDTO();
         dto.setId(booking.getId());
-      //  String code = Util.getSaltString();
-       // dtoRepository.findBookingDTOByNumber(code);
+        //  String code = Util.getSaltString();
+        // dtoRepository.findBookingDTOByNumber(code);
 
         dto.setNumber(booking.getBookingNumber());
         dto.setDatePurchase(booking.getDatePurchase());
@@ -112,6 +153,7 @@ public class BookingService {
             return generateUniqueBookingCode(); // recursion
         }
     }
+
     private Booking exists(String bookingNumber) {
         return bookingRepository.findBookingByBookingNumber(bookingNumber);
     }

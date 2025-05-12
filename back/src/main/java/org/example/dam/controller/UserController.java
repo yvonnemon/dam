@@ -13,29 +13,16 @@ import java.util.Optional;
 @RequestMapping("/api/users")
 public class UserController {
 
-/*
-*
-*
-*
-* TODO
-*  TODO
-*   TODO
-*    TODO
-*     HAY QUE HACER UN DTO PARA USER PORQUE LA PASSWORD NO ESTA EN JSONIGNORE
-*
-*
-*
-* */
     private final UserService userService;
 
     public UserController(UserService userService) {
         this.userService = userService;
     }
 
-    //TODO move to /auth
+    //TODO este se queda para el de admin
     @PostMapping
     public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO user) {
-        return ResponseEntity.ok(userService.save(user));
+        return ResponseEntity.ok(userService.save(user, true));
     }
 
     @GetMapping("/{id}")

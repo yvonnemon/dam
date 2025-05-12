@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 
 import java.time.LocalDate;
 
+@Table(
+        uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "flight_id"})
+)
 @Entity
 public class Booking {
 
@@ -29,7 +32,7 @@ public class Booking {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "flight_id")
     private Flight flight;
 

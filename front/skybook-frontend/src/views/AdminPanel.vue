@@ -250,7 +250,7 @@
       api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     }
     fetchFlights();
-    //fetchBookings();
+    fetchBookings();
     fetchAirports();
     fetchPlanes();
   });
@@ -260,10 +260,10 @@
     flights.value = res.data;
   };
 
-  /*const fetchBookings = async () => {
-    const res = await api.get('/admin/bookings'); // Make sure this endpoint exists and is admin-only
+  const fetchBookings = async () => {
+    const res = await api.get('/bookings/'); // Make sure this endpoint exists and is admin-only
     bookings.value = res.data;
-  };*/
+  };
 
   const fetchAirports = async () => {
     const res = await api.get('/airports/');

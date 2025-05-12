@@ -14,8 +14,11 @@
         <div class="card-body">
           <p><strong>Seats:</strong> {{ flight.seatsAvailable }} / {{ flight.seatsTotal }}</p>
         </div>
-        <button @click="bookFlight(flight.id)" :disabled="flight.seatsAvailable <= 0">
-          Book Now
+        <button
+          @click="bookFlight(flight.id)"
+          :disabled="isAlreadyBooked(flight.id) || flight.seatsAvailable === 0"
+        >
+          {{ isAlreadyBooked(flight.id) ? 'Already Booked' : 'Book' }}
         </button>
       </div>
     </div>
@@ -122,6 +125,7 @@ import api from '../services/api';
 const flights = ref([]);
 const loading = ref(true);
 const message = ref('');
+const userBookings = ref([]);
 
 const newBooking = ref({
   flightId: '',
@@ -154,7 +158,22 @@ const bookFlight = async (flightId) => {
   }
 };
 
+const fetchBookings = async () => {
+    try {
+      const res = await api.get('/bookings/user');
+      userBookings.value = res.data.map(b => b.flight.id);
+    } catch (err) {
+      message.value = 'Failed to load bookings.';
+    } finally {
+      loading.value = false;
+    }
+};
+
 const formatDate = (d) => new Date(d).toLocaleString();
+
+const isAlreadyBooked = (flightId) => {
+  return userBookings.value.includes(flightId);
+};
 
 onMounted(() => {
   const token = localStorage.getItem('token');
@@ -162,6 +181,7 @@ onMounted(() => {
     api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
   }
   fetchFlights();
+  fetchBookings();
 });
 </script>
 

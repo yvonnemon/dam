@@ -2,10 +2,7 @@ package org.example.dam.service;
 
 import org.example.dam.dto.FlightDTO;
 import org.example.dam.dto.UserDTO;
-import org.example.dam.model.Airport;
-import org.example.dam.model.Flight;
-import org.example.dam.model.Plane;
-import org.example.dam.model.User;
+import org.example.dam.model.*;
 import org.example.dam.repository.UserRepository;
 import org.example.dam.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,8 +52,11 @@ public class UserService {
                 .orElse(null);
     }
 
-    //TODO update y create?
-    public UserDTO save(UserDTO user) {
+
+    public UserDTO save(UserDTO user, boolean isAdmin) {
+        if(!isAdmin) {
+            user.setRole(Role.USER);
+        }
 
         return entityToDto( userRepository.save(dtoToEntity(user)));
 

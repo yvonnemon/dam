@@ -9,7 +9,7 @@
       <input v-model="email" type="email" placeholder="Email" required />
       <input v-model="password" type="password" placeholder="Password" required />
       <input v-model="phone" placeholder="Phone (optional)" />
-      <input v-model="dni" placeholder="DNI (optional)" />
+      <input v-model="dni" placeholder="DNI" required/>
       <button type="submit">Register</button>
     </form>
     <p v-if="error" class="message error">{{ error }}</p>
@@ -126,7 +126,7 @@
         password: password.value,
         phone: phone.value,
         dni: dni.value,
-        role: 'USER'
+        
       });
   
       success.value = 'Registration successful! Redirecting to login...';

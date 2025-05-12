@@ -48,10 +48,11 @@ public class JwtUtils {
         Map<String, Object> claims = new HashMap<>();
         claims.put("role", user.getRole().name());
         claims.put("id", user.getId());
+        claims.put("email", user.getEmail());
 
         return Jwts.builder()
                 .claims(claims)
-                .subject(user.getFirstName())
+                .subject(user.getEmail())
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10)) // 10h
                 .signWith(getSignInKey())
