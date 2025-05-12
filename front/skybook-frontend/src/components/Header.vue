@@ -5,12 +5,12 @@
         <router-link to="/flights">Flights</router-link>
         <router-link to="/bookings">Bookings</router-link>
         <router-link v-if="isAdmin" to="/admin">Admin</router-link>
-        <button @click="logout">Logout</button>
+        <button @click="logout()">Logout</button>
       </nav>
     </header>
   </template>
   
-  <style scoped>
+<style scoped>
   .site-header {
     background-color: #0a3b6c;
     color: white;
@@ -69,5 +69,17 @@
   .nav-links button:hover {
     background-color: #f1f1f1;
   }
-  </style>
+</style>
+
+<script>
+export default {
+  methods: {
+    logout(){
+      localStorage.removeItem('token');
+      this.$router.push({ name: 'Login' }); // Redirect to login
+    }
+  }
+}
+
+</script>
   

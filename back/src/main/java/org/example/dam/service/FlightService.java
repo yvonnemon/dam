@@ -66,7 +66,7 @@ public class FlightService {
         flightRepository.deleteById(flight);
     }
 
-    private Flight dtoToEntity(FlightDTO dto) {
+   /* private Flight dtoToEntity(FlightDTO dto) {
         Flight flight = new Flight();
         if(dto.getId() == null) {
             flight.setFlightNumber("SB"+dto.getDepartureDate().toString());
@@ -94,7 +94,42 @@ public class FlightService {
         flight.setPlane(plane);
 
         return flight;
-    }
+    }*/
+   private Flight dtoToEntity(FlightDTO dto) {
+       try {
+           Flight flight = new Flight();
+           if (dto.getId() == null) {
+               flight.setFlightNumber("SB" + dto.getDepartureDate());
+           } else {
+               flight.setFlightNumber(dto.getFlightNumber());
+           }
+
+           Airport departure = airportRepository.findById(dto.getDepartureId())
+                   .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Airport not found"));
+           Airport destination = airportRepository.findById(dto.getDestinationId())
+                   .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Airport not found"));
+           Plane plane = planeRepository.findById(dto.getModelId())
+                   .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Plane model not found"));
+
+           flight.setDepartureAirport(departure);
+           flight.setDestinationAirport(destination);
+           flight.setDepartureDate(dto.getDepartureDate());
+
+           double distance = Util.getDistanceFromLatLonInKm(
+                   departure.getLatitude(), departure.getLongitude(),
+                   destination.getLatitude(), destination.getLongitude()
+           );
+           flight.setDuration(distance / 750.0);
+           flight.setPlane(plane);
+
+           return flight;
+
+       } catch (ResponseStatusException ex) {
+           throw ex;
+       } catch (Exception ex) {
+           throw new RuntimeException("Failed to convert FlightDTO to Flight entity: " + ex.getMessage(), ex);
+       }
+   }
 
     private FlightDTO entityToDto(Flight entity) {
         FlightDTO dto = new FlightDTO();
