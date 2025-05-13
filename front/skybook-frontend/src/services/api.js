@@ -5,7 +5,7 @@ const api = axios.create({
 });
 
 // ✅ If token exists, attach it to every request
-const token = localStorage.getItem('token');
+const token = sessionStorage.getItem('token');
 if (token) {
   api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 }

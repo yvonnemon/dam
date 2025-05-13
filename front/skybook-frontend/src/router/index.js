@@ -29,7 +29,7 @@ const router = createRouter({
 
 // Global route guard
 router.beforeEach((to, from, next) => {
-  const token = localStorage.getItem('token'); // Assuming the JWT is stored in localStorage
+  const token = sessionStorage.getItem('token'); // Assuming the JWT is stored in localStorage
   if (to.meta.requiresAuth) {
     // Check if token exists
     if (!token) {

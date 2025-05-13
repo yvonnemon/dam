@@ -51,7 +51,7 @@
       });
   
       const token = response.data.token;
-      localStorage.setItem('token', token);
+      sessionStorage.setItem('token', token);
   
       // Set token as default for future API calls
       api.defaults.headers.common['Authorization'] = `Bearer ${token}`;

@@ -6,25 +6,66 @@
       <h3>Create New Flight</h3>
       <form @submit.prevent="createFlight">
         <div class="form-grid">
-          <!--TODO placeholder-->
-          <select v-model="newFlight.departureId" placeholder="Departure">
+          
+          <!--<select v-model="newFlight.departureId" placeholder="Departure">
             <option value="" disabled selected>Choose a departure airport</option>
             <option v-for="airport in airports" :value="airport.id">
               {{ airport.name }}
             </option>
-          </select>
-          <select v-model="newFlight.destinationId" placeholder="Destination">
-             <option value="" disabled selected>Choose a destination airport</option>
-            <option v-for="airport in airports" :value="airport.id">
-              {{ airport.name }}
-            </option>
-          </select>
+          </select>-->
+          
+            <div class="same-size">
+              <multiselect
+                
+                v-model="newFlight.departureId"
+                :options="airports"
+                :searchable="true"
+                :multiple="false"
+                placeholder="Search for an airport"
+                label="name"
+                track-by="id"
+              />
+            </div>
+          <!-- Display selected airport  
+
+                      <div v-if="selectedAirport" >
+              <p>Selected Airport: {{ selectedAirport.name }}</p>
+            </div>
+           -->
+
+
+          <div class="same-size">
+
+            <div class="same-size">
+              <multiselect
+                
+                v-model="newFlight.destinationId"
+                :options="airports"
+                :searchable="true"
+                :multiple="false"
+                placeholder="Search for an airport"
+                label="name"
+                track-by="id"
+              />
+            </div>
+            <!--<select v-model="newFlight.destinationId" placeholder="Destination" >
+              <option value="" disabled selected>Choose a destination airport</option>
+              <option v-for="airport in airports" :value="airport.id">
+                {{ airport.name }}
+              </option>
+            </select>-->
+          </div>
+          <div class="same-size">
           <select v-model="newFlight.modelId" placeholder="Date">
             <option v-for="plane in planes" :value="plane.id">
               {{ plane.name }}
             </option>
           </select>
-          <input v-model="newFlight.departureDate" type="datetime-local" required />
+          </div>
+          
+          <div class="same-size">
+            <input v-model="newFlight.departureDate" type="datetime-local" required />
+          </div>
           
         </div>
         <button type="submit">Create Flight</button>
@@ -89,6 +130,7 @@
 </template>
 
 <style scoped>
+
   .admin-view {
     max-width: 960px;
     margin: 0 auto;
@@ -109,10 +151,20 @@
   }
 
   .form-grid {
-    display: grid;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
     grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
     gap: 12px;
     margin-bottom: 12px;
+  }
+  .same-size {
+   flex: 1;
+   display: flex;        /* make children also flex containers */
+  flex-direction: column; /* if vertical layout is desired */
+  justify-content: stretch;
+  align-items: stretch;
   }
 
   form input {
@@ -203,6 +255,8 @@
 <script setup>
   import { ref, onMounted } from 'vue';
   import api from '../services/api';
+  import Multiselect from 'vue-multiselect';
+  import 'vue-multiselect/dist/vue-multiselect.css';
 
   const flights = ref([]);
   const bookings = ref([]);
@@ -222,6 +276,8 @@
     try {
       await api.post('/flights', {
         ...newFlight.value,
+        departureId: newFlight.value.departureId.id,     
+        destinationId: newFlight.value.destinationId.id,
       }); 
 
       message.value = 'Flight created successfully!';
@@ -245,7 +301,7 @@
 
 
   onMounted(() => {
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
     if (token) {
       api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     }
@@ -275,7 +331,7 @@
     planes.value = res.data;
   };
 
-    const formatDate = (d) => {
+  const formatDate = (d) => {
     const date = new Date(d);
     const day = String(date.getDate()).padStart(2, '0'); // Add leading zero
     const month = String(date.getMonth() + 1).padStart(2, '0'); // Add leading zero, month starts at 0
@@ -285,5 +341,5 @@
 
     return `${day}-${month}-${year} ${hours}:${minutes}`;
   };
-
+   
 </script>

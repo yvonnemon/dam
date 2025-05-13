@@ -75,7 +75,7 @@
 export default {
   methods: {
     logout(){
-      localStorage.removeItem('token');
+      sessionStorage.removeItem('token');
       this.$router.push({ name: 'Login' }); // Redirect to login
     }
   }
