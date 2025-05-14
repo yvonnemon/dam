@@ -33,7 +33,7 @@ public class Flight {
     @Column(nullable = false)
     private Double duration;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "plane_id")
     private Plane plane;
 

@@ -159,12 +159,12 @@
     gap: 12px;
     margin-bottom: 12px;
   }
-  .same-size {
+.same-size {
    flex: 1;
-   display: flex;        /* make children also flex containers */
-  flex-direction: column; /* if vertical layout is desired */
-  justify-content: stretch;
-  align-items: stretch;
+    display: flex;        /* make children also flex containers */
+    flex-direction: column; /* if vertical layout is desired */
+    justify-content: stretch;
+    align-items: stretch;
   }
 
   form input {

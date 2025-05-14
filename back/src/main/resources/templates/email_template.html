@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Flight Booking Confirmation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            color: #333333;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f8f8;
+        }
+        .email-container {
+            background-color: #ffffff;
+            margin: 30px auto;
+            padding: 20px 30px;
+            max-width: 600px;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            color: #2b6cb0;
+        }
+        .details {
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #f1f5f9;
+            border-left: 4px solid #2b6cb0;
+        }
+        .footer {
+            font-size: 12px;
+            color: #888;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+<div class="email-container">
+    <h2>Your Flight Booking is Confirmed ✈️</h2>
+    <p>Hi {{firstName}},</p>
+    <p>Thank you for booking with <strong>SkyBook</strong>!</p>
+
+    <p>Here is your booking number:</p>
+    <div class="details">
+        {{body}} <!-- This is where you inject dynamic details -->
+    </div>
+
+    <p>Please be at the airport in time. For scheduling a pick up, please contact us.</p>
+
+    <p>Safe travels,</p>
+    <p>The SkyFly Team</p>
+
+    <div class="footer">
+        This is an automated email. Please do not reply.
+    </div>
+</div>
+</body>
+</html>

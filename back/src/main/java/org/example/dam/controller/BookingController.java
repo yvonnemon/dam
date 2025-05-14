@@ -35,6 +35,13 @@ public class BookingController {
         return ResponseEntity.ok(asd);
     }
 
+    @GetMapping("/user-booked")
+    public ResponseEntity<List<BookingDTO>> findByUserAndStatusNot() {
+        List<BookingDTO> asd = bookingService.findByUserAndStatusNot();
+        int a = asd.size();
+        return ResponseEntity.ok(asd);
+    }
+
     @GetMapping("/")
     public ResponseEntity<List<BookingDTO>> getAllBookings() {
         return ResponseEntity.ok(bookingService.findAll());

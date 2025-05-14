@@ -160,7 +160,7 @@ const bookFlight = async (flightId) => {
 
 const fetchBookings = async () => {
     try {
-      const res = await api.get('/bookings/user');
+      const res = await api.get('/bookings/user-booked');
       userBookings.value = res.data.map(b => b.flight.id);
     } catch (err) {
       message.value = 'Failed to load bookings.';

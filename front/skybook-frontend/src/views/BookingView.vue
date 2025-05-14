@@ -26,7 +26,7 @@
         </div>
         <div class="card-body">
           <p><strong>Flight number:</strong> {{ booking.flight.flightNumber }}</p>
-          
+           <p><strong>Price:</strong> {{ booking.price }} €</p>
         </div>
         <button @click="cancelBooking(booking.id)" :disabled="isDisabled(booking.status)">Cancel Booking</button>
       </div>
