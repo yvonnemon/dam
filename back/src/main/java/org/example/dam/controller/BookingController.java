@@ -1,11 +1,14 @@
 package org.example.dam.controller;
 
+import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
 import org.example.dam.dto.BookingDTO;
 import org.example.dam.model.Booking;
 import org.example.dam.service.BookingService;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -61,5 +64,20 @@ public class BookingController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @GetMapping("/{id}/ticket")
+    public ResponseEntity<byte[]> downloadTicket(@PathVariable Long id) throws IOException {
+        // Generate PDF content
+        byte[] html = bookingService.generatePdfFromHtml(); // You can template this however you want
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDispositionFormData("attachment", "booking.pdf");
+        headers.setCacheControl(CacheControl.noCache().mustRevalidate());
+        System.out.println(html);
+        return new ResponseEntity<>(html, headers, HttpStatus.OK);
+
+    }
+
 
 }

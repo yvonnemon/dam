@@ -1,10 +1,18 @@
 package org.example.dam.service;
 
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Paragraph;
+
+
+import com.itextpdf.text.DocumentException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.example.dam.dto.BookingDTO;
 import org.example.dam.model.Booking;
 import org.example.dam.model.BookingStatus;
+
 import org.example.dam.model.Flight;
 import org.example.dam.model.User;
 import org.example.dam.repository.BookingRepository;
@@ -20,8 +28,12 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+
 
 @Service
 public class BookingService {
@@ -82,6 +94,7 @@ public class BookingService {
     }
 
 
+
     public BookingDTO findById(Long id) {
         return entityToDto(bookingRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Booking not found")));
     }
@@ -130,6 +143,24 @@ public class BookingService {
         flightRepository.save(f);
         bookingRepository.save(b);
         //bookingRepository.deleteById(id);
+    }
+
+    public byte[] generatePdfFromHtml() throws IOException {
+       // ("templates/email_template.html");
+        try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+            PdfWriter writer = new PdfWriter(baos);
+            PdfDocument pdfDoc = new PdfDocument(writer);
+            Document doc = new Document(pdfDoc);
+
+            doc.add(new Paragraph("✈️ Your Flight Ticket"));
+            doc.add(new Paragraph("Booking Number: " + "bookingnumber"));
+            doc.add(new Paragraph("Flight Details: " + "flightDetails"));
+
+            doc.add(new Paragraph("Thank you for booking with us!"));
+
+            doc.close();
+            return baos.toByteArray();
+        }
     }
 
     private Booking dtoToEntity(BookingDTO dto) {
@@ -185,7 +216,7 @@ public class BookingService {
         return bookingRepository.findBookingByBookingNumber(bookingNumber);
     }
 
-    public void sendBookingConfirmation(String userEmail, String userName, String bookingDetails) {
+    private void sendBookingConfirmation(String userEmail, String userName, String bookingDetails) {
         try {
             String subject = "Booking Confirmation";
 
@@ -196,4 +227,5 @@ public class BookingService {
             e.printStackTrace();
         }
     }
+
 }

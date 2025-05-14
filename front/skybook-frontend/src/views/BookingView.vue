@@ -30,8 +30,9 @@
         </div>
         <button @click="cancelBooking(booking.id)" :disabled="isDisabled(booking.status)">Cancel Booking</button>
       </div>
-    </div>
 
+    </div>
+    <button @click="downloadTicket" >descarga</button> 
     <p v-if="message" class="message">{{ message }}</p>
   </div>
 </template>
@@ -166,6 +167,36 @@ const cancelBooking = async (id) => {
     message.value = 'Failed to cancel booking.';
   }
 };
+
+const downloadTicket = async (bookingId) => {
+  try {
+   // const response = await fetch(`/api/booking/${bookingId}/ticket`);
+    const response = await api.get(`/bookings/6/ticket`, {
+      responseType: 'blob',
+    });
+    console.log("Response status:", response.status);
+
+      const blob = response.data;
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `ticket-${bookingId}.pdf`;
+      link.click();
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Download error:', error);
+
+      // Optional: read backend error message if response exists
+      if (error.response && error.response.data) {
+        const reader = new FileReader();
+        reader.onload = () => {
+          console.error("Server said:", reader.result);
+        };
+        reader.readAsText(error.response.data);
+    }
+  }
+};
+
 
 const formatDate = (dateStr) => {
   return new Date(dateStr).toLocaleString();

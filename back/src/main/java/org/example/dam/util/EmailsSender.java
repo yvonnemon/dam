@@ -53,7 +53,7 @@ public class EmailsSender {
         }
     }
 
-    private String getContentOfHTML(String filename) throws IOException {
+    public String getContentOfHTML(String filename) throws IOException {
         try (InputStream is = EmailsSender.class.getClassLoader().getResourceAsStream(filename)) {
             if (is == null) {
                 return "";
