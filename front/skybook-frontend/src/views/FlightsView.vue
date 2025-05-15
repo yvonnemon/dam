@@ -1,31 +1,50 @@
 <template>
   <div class="book-flight-view">
-    <h2> {{ t('book-a-flight') }} </h2>
+    <h2>{{ t('book-a-flight') }}</h2>
 
-    <div v-if="loading" class="loading-message"> {{ t('loading-available-flights') }} </div>
-    <div v-else-if="flights.length === 0" class="no-flights"> {{ t('no-flights-available-at-the-moment') }} </div>
+    <div class="filters">
+      <input type="date" v-model="filterDate" class="filter-input" />
+      <input
+        type="text"
+        v-model="filterAirport"
+        :placeholder="t('filters.search-by-airport')"
+        class="filter-input"
+      />
+    </div>
+
+
+    <div v-if="loading" class="loading-message">
+      {{ t('loading-available-flights') }}
+    </div>
+
+    <div v-else-if="filteredFlights.length === 0" class="no-flights">
+      {{ t('no-flights-available-at-the-moment') }}
+    </div>
 
     <div class="flight-list">
-      <div v-for="flight in flights" :key="flight.id" class="flight-card">
+      <div v-for="flight in filteredFlights" :key="flight.id" class="flight-card">
         <div class="card-header">
-          <h3>{{ flight.departureName }} &rarr; {{ flight.destinationName }}</h3>
-          <p class="date">{{ formatDate(flight.departureDate) }}</p>
+          <h3>{{ flight.departureName }} &rarr; {{ flight.destinationName }}</h3>         
         </div>
         <div class="card-body">
+          <p class="date">{{ formatDate(flight.departureDate) }}</p>
           <p><strong>{{ t('seats') }}:</strong> {{ flight.seatsAvailable }} / {{ flight.seatsTotal }}</p>
-        </div>
-        <button
+          <button class="button-with-icon"
           @click="bookFlight(flight.id)"
           :disabled="isAlreadyBooked(flight.id) || flight.seatsAvailable === 0"
         >
-        {{ isAlreadyBooked(flight.id) ? t('already-booked') : t('book') }}
+          <span class="material-symbols-outlined">airplane_ticket</span>
+          {{ isAlreadyBooked(flight.id) ? t('already-booked') : t('book') }}
         </button>
+        </div>
+
       </div>
     </div>
 
     <p v-if="message" class="message">{{ message }}</p>
   </div>
 </template>
+
 
 <style scoped>
   .book-flight-view {
@@ -56,10 +75,13 @@
   }
 
   .flight-card {
+    display: flex;
+    flex-direction: column;
     background-color: #ffffff;
     border: 1px solid #ecf0f1;
     border-radius: 10px;
     padding: 20px;
+    min-height: 10dvh;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
   }
@@ -68,6 +90,9 @@
     transform: translateY(-5px);
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
   }
+
+  
+
 
   .card-header {
     margin-bottom: 15px;
@@ -86,7 +111,7 @@
   }
 
   .card-body {
-    margin-bottom: 20px;
+    margin-top: auto;
   }
 
   button {
@@ -115,17 +140,49 @@
     color: #3dd5ff;
     font-weight: bold;
   }
+
+  .filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1rem;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+  margin: auto;
+}
+
+.filter-input {
+  padding: 0.6rem 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+  flex: 1;
+  min-width: 200px;
+  transition: border-color 0.3s;
+}
+
+.filter-input:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
 </style>
 
 
 <script setup>
-  import { ref, onMounted } from 'vue';
+  import { ref, onMounted, computed } from 'vue';
   import api from '../services/api';
+  import { useI18n } from 'vue-i18n';
+  const { t } = useI18n();
 
   const flights = ref([]);
   const loading = ref(true);
   const message = ref('');
   const userBookings = ref([]);
+  const filterDate = ref('');
+  const filterAirport = ref('');
 
   const newBooking = ref({
     flightId: '',
@@ -175,6 +232,19 @@
     return userBookings.value.includes(flightId);
   };
 
+
+  const filteredFlights = computed(() => {
+    return flights.value.filter(flight => {
+      const matchesDate = !filterDate.value || flight.departureDate.startsWith(filterDate.value);
+      const matchesAirport =
+        !filterAirport.value ||
+        flight.departureName.toLowerCase().includes(filterAirport.value.toLowerCase()) ||
+        flight.destinationName.toLowerCase().includes(filterAirport.value.toLowerCase());
+
+      return matchesDate && matchesAirport;
+    });
+  });
+
   onMounted(() => {
     const token = sessionStorage.getItem('token');
     if (token) {
@@ -183,5 +253,6 @@
     fetchFlights();
     fetchBookings();
   });
+
 </script>
 

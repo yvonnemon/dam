@@ -42,6 +42,7 @@
     "bookings": "Reservas",
     "admin": "Admin",
     "logout": "Cerrar sesión",
+    "download": "Descargar",
     "404-page-not-found": "404 - Página No Encontrada",
     "404-message": "Lo sentimos, la página que buscas no existe o no tienes permiso para acceder a ella."
 }

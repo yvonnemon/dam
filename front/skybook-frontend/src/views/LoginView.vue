@@ -30,8 +30,10 @@
           @confirm="handleConfirmDownload"
           @cancel="showModal = false"
         />
-        <button type="submit" class="submit-btn" @click="openDownloadModal('1')"> {{ t('log-in') }} </button>
-        <button type="" class="submit-btn" @click="register()"> {{ t('register') }} </button>
+       <button type="submit" class="submit-btn" > {{ t('log-in') }} </button>
+      <!--<button type="submit" class="submit-btn" @click="openDownloadModal('1')"> {{ t('log-in') }} </button>-->
+
+       <button type="" class="submit-btn" @click="register()"> {{ t('register') }} </button>
   
         <p v-if="error" class="error-message">{{ error }}</p>
       </form>

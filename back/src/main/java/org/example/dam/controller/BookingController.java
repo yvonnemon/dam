@@ -9,7 +9,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/bookings")
@@ -68,7 +70,12 @@ public class BookingController {
     @GetMapping("/{id}/ticket")
     public ResponseEntity<byte[]> downloadTicket(@PathVariable Long id) throws IOException {
         // Generate PDF content
-        byte[] html = bookingService.generatePdfFromHtml(); // You can template this however you want
+        BookingDTO booking = bookingService.findById(id);
+        Map<String, String> flightDetails = new HashMap<>();
+        flightDetails.put("Departure", booking.getFlight().getDepartureAirport().getName());
+        flightDetails.put("Arrival", booking.getFlight().getDestinationAirport().getName());
+        flightDetails.put("Date", booking.getFlight().getDepartureDate().toString());
+        byte[] html = bookingService.generateFlightTicketPdf(booking.getNumber(), flightDetails); // You can template this however you want
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_PDF);

@@ -1,10 +1,10 @@
 <template>
     <header class="site-header">
-      <h1 class="logo">✈️ {{ t('flight-booking')}} </h1>
+      <h1 class="logo">✈️ SkyBook </h1>
       <nav class="nav-links">
         <router-link to="/flights"> {{ t('flights') }} </router-link>
         <router-link to="/bookings"> {{ t('bookings') }} </router-link>
-        <router-link v-if="isAdmin()" to="/admin"> {{ t('admin') }} </router-link>
+       <!-- <router-link v-if="isAdmin()" to="/admin"> {{ t('admin') }} </router-link>-->
         <button @click="logout()"> {{ t('logout') }} </button>
       </nav>
     </header>
@@ -73,7 +73,8 @@
 
 <script setup>
   import { useRouter } from 'vue-router';
-
+  import { useI18n } from 'vue-i18n';
+  const { t } = useI18n();
   const router = useRouter();
 
   const logout = () => {

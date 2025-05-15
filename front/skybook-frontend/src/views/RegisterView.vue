@@ -1,6 +1,6 @@
 <template>
   <div class="register-container">
-    <h2> {{ t('create-your-account') }}</h2>
+    <h2> Create your account </h2>
     <form @submit.prevent="register">
       
         <input v-model="firstName" :placeholder="t('first-name')" required />
@@ -102,7 +102,8 @@
   import { ref } from 'vue';
   import { useRouter } from 'vue-router';
   import api from '../services/api';
-  
+  import { useI18n } from 'vue-i18n';
+  const { t } = useI18n();
   const router = useRouter();
   
   const firstName = ref('');

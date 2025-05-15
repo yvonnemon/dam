@@ -1,6 +1,6 @@
 <template>
   <div class="admin-view">
-    <h2>{{ t('admin panel') }}</h2>
+    <h2>{{ t('admin-panel') }}</h2>
 
     <section class="new-flight card">
       <h3>{{ t('create-new-flight') }}</h3>
@@ -259,6 +259,8 @@
   import api from '../services/api';
   import Multiselect from 'vue-multiselect';
   import 'vue-multiselect/dist/vue-multiselect.css';
+  import { useI18n } from 'vue-i18n';
+  const { t } = useI18n();
 
   const flights = ref([]);
   const bookings = ref([]);

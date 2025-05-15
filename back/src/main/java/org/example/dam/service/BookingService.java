@@ -1,12 +1,14 @@
 package org.example.dam.service;
 
-import com.itextpdf.kernel.pdf.PdfWriter;
-import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.colors.ColorConstants;
+import com.itextpdf.kernel.font.PdfFont;
+import com.itextpdf.kernel.font.PdfFontFactory;
+import com.itextpdf.kernel.pdf.*;
 import com.itextpdf.layout.Document;
-import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.element.*;
 
-
-import com.itextpdf.text.DocumentException;
+import com.itextpdf.layout.properties.TextAlignment;
+import com.itextpdf.layout.properties.UnitValue;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.example.dam.dto.BookingDTO;
@@ -32,7 +34,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.Map;
 
 
 @Service
@@ -145,20 +147,55 @@ public class BookingService {
         //bookingRepository.deleteById(id);
     }
 
-    public byte[] generatePdfFromHtml() throws IOException {
-       // ("templates/email_template.html");
+    public byte[] generateFlightTicketPdf(String bookingNumber, Map<String, String> flightDetails) throws IOException {
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             PdfWriter writer = new PdfWriter(baos);
             PdfDocument pdfDoc = new PdfDocument(writer);
-            Document doc = new Document(pdfDoc);
+            Document document = new Document(pdfDoc);
 
-            doc.add(new Paragraph("✈️ Your Flight Ticket"));
-            doc.add(new Paragraph("Booking Number: " + "bookingnumber"));
-            doc.add(new Paragraph("Flight Details: " + "flightDetails"));
+            PdfFont bold = PdfFontFactory.createFont("Helvetica-Bold");
+            PdfFont regular = PdfFontFactory.createFont("Helvetica");
 
-            doc.add(new Paragraph("Thank you for booking with us!"));
+            // Title
+            Paragraph title = new Paragraph("✈️ Your Flight Ticket")
+                    .setFont(bold)
+                    .setFontSize(18)
+                    .setTextAlignment(TextAlignment.CENTER)
+                    .setMarginBottom(20);
+            document.add(title);
 
-            doc.close();
+            // Booking Number
+            Paragraph booking = new Paragraph()
+                    .add(new Text("Booking Number: ").setFont(bold))
+                    .add(new Text(bookingNumber).setFont(regular))
+                    .setMarginBottom(10);
+            document.add(booking);
+
+            // Flight Details Table
+            if (flightDetails != null && !flightDetails.isEmpty()) {
+                Table table = new Table(UnitValue.createPercentArray(new float[]{1, 2}))
+                        .useAllAvailableWidth()
+                        .setMarginBottom(20);
+
+                table.addHeaderCell(new Cell().add(new Paragraph("Detail")).setBackgroundColor(ColorConstants.LIGHT_GRAY).setFont(bold));
+                table.addHeaderCell(new Cell().add(new Paragraph("Value")).setBackgroundColor(ColorConstants.LIGHT_GRAY).setFont(bold));
+
+                for (Map.Entry<String, String> entry : flightDetails.entrySet()) {
+                    table.addCell(new Cell().add(new Paragraph(entry.getKey())));
+                    table.addCell(new Cell().add(new Paragraph(entry.getValue())));
+                }
+
+                document.add(table);
+            }
+
+            // Thank You
+            Paragraph thanks = new Paragraph("Thank you for booking with us!")
+                    .setFont(regular)
+                    .setTextAlignment(TextAlignment.CENTER)
+                    .setFontSize(12);
+            document.add(thanks);
+
+            document.close();
             return baos.toByteArray();
         }
     }
@@ -220,9 +257,7 @@ public class BookingService {
         try {
             String subject = "Booking Confirmation";
 
-            String dataAsBody = bookingDetails;
-
-            emailSender.sendEmailWithAttachment(subject, dataAsBody, userEmail, userName);
+            emailSender.sendEmailWithAttachment(subject, bookingDetails, userEmail, userName);
         } catch (Exception e) {
             e.printStackTrace();
         }

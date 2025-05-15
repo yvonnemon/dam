@@ -13,9 +13,10 @@
           <p :class="getStatusClass(booking.status)"><strong>{{ formatStatus(booking.status) }}</strong></p>
           <h5>
             <div class="h3-icons">            
-              <span class="material-symbols-outlined iconos">travel</span>
-              <p> {{ booking.flight.departureAirport.name }} - {{ booking.flight.departureAirport.iata }}
-                > {{ booking.flight.destinationAirport.name }} - {{ booking.flight.destinationAirport.iata }}</p>
+              
+              <p> {{ booking.flight.departureAirport.name }} - {{ booking.flight.departureAirport.iata }}</p>
+                <span class="material-symbols-outlined iconos">travel</span>
+                <p>   {{ booking.flight.destinationAirport.name }} - {{ booking.flight.destinationAirport.iata }}</p>
             </div>
           </h5>
           <div class="p-icons">
@@ -28,11 +29,20 @@
           <p><strong>{{ t('flight-number') }}:</strong> {{ booking.flight.flightNumber }}</p>
            <p><strong>{{ t('price') }}:</strong> {{ booking.price }} €</p>
         </div>
-        <button @click="cancelBooking(booking.id)" :disabled="isDisabled(booking.status)"> {{ t('cancel-booking') }}</button>
+       <!-- <div :class="isActive ? 'button-with-icon active' : 'button-with-icon inactive'">
+          <span class="material-symbols-outlined">download</span>
+          <button @click="cancelBooking(booking.id)" :disabled="isDisabled(booking.status)"> {{ t('cancel-booking') }}</button>
+          <span class="material-symbols-outlined">
+          delete
+          </span>
+          <span class="material-symbols-outlined">download</span>
+        </div>-->
+         <button class="button-with-icon" @click="cancelBooking(booking.id)" :disabled="isDisabled(booking.status)"><span class="material-symbols-outlined">delete</span> {{ t('cancel-booking') }}</button>
+         <button class="button-with-icon download" @click="downloadTicket(booking.id)" ><span class="material-symbols-outlined">download</span> {{ t('download') }}</button>
       </div>
 
     </div>
-    <button @click="downloadTicket" >descarga</button> <!-- TODO -->
+    
     <p v-if="message" class="message">{{ message }}</p>
   </div>
 </template>
@@ -104,22 +114,13 @@
     padding: 10px 20px;
     background-color: #e74c3c;
     color: white;
-    border: none;
-    border-radius: 25px;
     font-size: 16px;
     cursor: pointer;
-    transition: background-color 0.3s;
+
   }
 
   button:hover {
     background-color: #c0392b;
-  }
-
-  button:disabled {
-    background-color: #ccc; /* Gray background */
-    color: #777; /* Lighter text */
-    cursor: not-allowed; /* Change cursor to indicate it's disabled */
-    border: 1px solid #ddd; /* Lighter border */
   }
 
 
@@ -142,6 +143,8 @@
 <script setup>
   import { ref, onMounted } from 'vue';
   import api from '../services/api';
+  import { useI18n } from 'vue-i18n';
+  const { t } = useI18n();
 
   const bookings = ref([]);
   const loading = ref(true);
@@ -171,7 +174,7 @@
   const downloadTicket = async (bookingId) => {
     try {
     // const response = await fetch(`/api/booking/${bookingId}/ticket`);
-      const response = await api.get(`/bookings/6/ticket`, {
+      const response = await api.get(`/booking/${bookingId}/ticket`, {
         responseType: 'blob',
       });
       console.log("Response status:", response.status);
