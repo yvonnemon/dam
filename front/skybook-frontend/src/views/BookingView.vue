@@ -118,6 +118,13 @@
     cursor: pointer;
 
   }
+  
+  button:disabled {
+    background-color: #ccc; /* Gray background */
+    color: #777; /* Lighter text */
+    cursor: not-allowed; /* Change cursor to indicate it's disabled */
+    border: 1px solid #ddd; /* Lighter border */
+  }
 
   button:hover {
     background-color: #c0392b;

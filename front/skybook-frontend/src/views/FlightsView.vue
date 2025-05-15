@@ -7,7 +7,7 @@
       <input
         type="text"
         v-model="filterAirport"
-        :placeholder="t('filters.search-by-airport')"
+        :placeholder="t('search-by-airport')"
         class="filter-input"
       />
     </div>

@@ -1,14 +1,14 @@
 <template>
     <footer class="footer">
       <div class="footer-content">
-        <p class="footer-message">{{ t('footer.message') }}</p>
+        <p class="footer-message">{{ t('message-footer') }}</p>
         <p class="footer-links">
-          <a href="#">{{ t('footer.terms') }}</a> |
-          <a href="#">{{ t('footer.privacy') }}</a>
+          <a href="#">{{ t('terms') }}</a> |
+          <a href="#">{{ t('privacy') }}</a>
         </p>
   
         <div class="language-switcher">
-          <label for="lang">{{ t('footer.language') }}:</label>
+          <label for="lang">{{ t('language') }}:</label>
           <select id="lang" v-model="locale">
             <option value="en">English</option>
             <option value="es">Español</option>

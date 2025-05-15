@@ -43,6 +43,11 @@
     "admin": "Admin",
     "logout": "Logout",
     "download": "Download",
+    "search-by-airport": "Search by airport",
     "404page-not-found": "404 - Page Not Found",
+    "message-footer": "Powered by github.com/yvonnemon",
+    "terms": "Terms",
+    "privacy": "Privacy",
+    "language": "Language",
     "404-message": "Sorry, the page you're looking for doesn't exist or you don't have permission to access it."
 }

@@ -44,5 +44,11 @@
     "logout": "Cerrar sesión",
     "download": "Descargar",
     "404-page-not-found": "404 - Página No Encontrada",
+    "search-by-airport": "Buscar por aeropuerto",
+    "message-footer": "Powered by github.com/yvonnemon",
+    "terms": "Terminos y condiciones",
+    "privacy": "Privacidad",
+    "language": "Idioma",
+
     "404-message": "Lo sentimos, la página que buscas no existe o no tienes permiso para acceder a ella."
 }
