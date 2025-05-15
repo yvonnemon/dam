@@ -1,14 +1,14 @@
 <template>
     <div class="login-container">
-      <h2>Skybook Login</h2>
+      <h2> {{ t('skybook-login') }} </h2>
       <form @submit.prevent="login" class="form">
         <div class="input-group">
-          <label for="email">Email</label>
+          <label for="email">{{ t('email')}}</label>
           <input
             id="email"
             v-model="email"
             type="email"
-            placeholder="Enter your email"
+            :placeholder="t('enter-your-email')"
             required
           />
         </div>
@@ -30,8 +30,8 @@
           @confirm="handleConfirmDownload"
           @cancel="showModal = false"
         />
-        <button type="submit" class="submit-btn" @click="openDownloadModal('1')">Log In</button>
-        <button type="" class="submit-btn" @click="register()">Register</button>
+        <button type="submit" class="submit-btn" @click="openDownloadModal('1')"> {{ t('log-in') }} </button>
+        <button type="" class="submit-btn" @click="register()"> {{ t('register') }} </button>
   
         <p v-if="error" class="error-message">{{ error }}</p>
       </form>

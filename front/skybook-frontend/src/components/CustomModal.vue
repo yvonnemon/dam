@@ -20,7 +20,7 @@
   defineEmits(['confirm', 'cancel']);
   </script>
   
-  <style scoped>
+<style scoped>
   .modal-backdrop {
     position: fixed;
     inset: 0;
@@ -101,5 +101,5 @@
       transform: translateY(0);
     }
   }
-  </style>
+</style>
   

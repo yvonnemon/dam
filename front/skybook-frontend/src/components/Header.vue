@@ -1,11 +1,11 @@
 <template>
     <header class="site-header">
-      <h1 class="logo">✈️ Flight Booking</h1>
+      <h1 class="logo">✈️ {{ t('flight-booking')}} </h1>
       <nav class="nav-links">
-        <router-link to="/flights">Flights</router-link>
-        <router-link to="/bookings">Bookings</router-link>
-        <router-link v-if="isAdmin()" to="/admin">Admin</router-link>
-        <button @click="logout()">Logout</button>
+        <router-link to="/flights"> {{ t('flights') }} </router-link>
+        <router-link to="/bookings"> {{ t('bookings') }} </router-link>
+        <router-link v-if="isAdmin()" to="/admin"> {{ t('admin') }} </router-link>
+        <button @click="logout()"> {{ t('logout') }} </button>
       </nav>
     </header>
   </template>

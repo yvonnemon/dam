@@ -1,7 +1,7 @@
 <template>
   <div class="not-found">
-    <h1>404 - Page Not Found</h1>
-    <p>Sorry, the page you're looking for doesn't exist or you don't have permission to access it.</p>
+    <h1> {{ t('404page-not-found') }} </h1>
+    <p> {{ t('404-message') }} </p>
   </div>
 </template>
 

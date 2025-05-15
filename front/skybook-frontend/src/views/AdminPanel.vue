@@ -1,9 +1,9 @@
 <template>
   <div class="admin-view">
-    <h2>Admin Panel</h2>
+    <h2>{{ t('admin panel') }}</h2>
 
     <section class="new-flight card">
-      <h3>Create New Flight</h3>
+      <h3>{{ t('create-new-flight') }}</h3>
       <form @submit.prevent="createFlight">
         <div class="form-grid">
           
@@ -21,7 +21,7 @@
                 :options="airports"
                 :searchable="true"
                 :multiple="false"
-                placeholder="Search for an airport"
+                :placeholder="t('search-for-an-airport')"
                 label="name"
                 track-by="id"
               />
@@ -43,7 +43,7 @@
                 :options="airports"
                 :searchable="true"
                 :multiple="false"
-                placeholder="Search for an airport"
+                :placeholder="t('search-for-an-airport')"
                 label="name"
                 track-by="id"
               />
@@ -56,7 +56,7 @@
             </select>-->
           </div>
           <div class="same-size">
-          <select v-model="newFlight.modelId" placeholder="Date">
+          <select v-model="newFlight.modelId" :placeholder="t('Date')">
             <option v-for="plane in planes" :value="plane.id">
               {{ plane.name }}
             </option>
@@ -68,21 +68,21 @@
           </div>
           
         </div>
-        <button type="submit">Create Flight</button>
+        <button type="submit"> {{ t('create-flight') }}</button>
       </form>
     </section>
 
     <section>
-      <h3>All Flights</h3>
+      <h3> {{ t('all-flights') }}</h3>
       <div class="table-container">
         <table>
           <thead>
             <tr>
-              <th>Origin</th>
-              <th>Destination</th>
-              <th>Date</th>
-              <th>Model</th>
-              <th>Actions</th>
+              <th>{{ t('origin') }}</th>
+              <th>{{ t('destination') }}</th>
+              <th>{{ t('date') }}</th>
+              <th>{{ t('model') }}</th>
+              <th>{{ t('actions') }}</th>
             </tr>
           </thead>
           <tbody>
@@ -95,7 +95,7 @@
               <td>{{ flight.modelName }}</td>
               <td>
                 
-                <button @click="deleteFlight(flight.id)">Delete</button>
+                <button @click="deleteFlight(flight.id)"> {{ t('delete') }}</button>
               </td>
             </tr>
           </tbody>
@@ -104,15 +104,15 @@
     </section>
 
     <section>
-      <h3>All Bookings</h3>
+      <h3> {{ t('all-bookings') }}</h3>
       <div class="table-container">
         <table>
           <thead>
             <tr>
-              <th>User</th>
-              <th>Flight</th>
-              <th>Booking Number</th>
-              <th>Date</th>
+              <th>{{ t('user') }} </th>
+              <th>{{ t('flight') }} </th>
+              <th>{{ t('booking-number') }} </th>
+              <th>{{ t('date') }} </th>
             </tr>
           </thead>
           <tbody>
@@ -282,7 +282,7 @@
         destinationId: newFlight.value.destinationId.id,
       }); 
 
-      message.value = 'Flight created successfully!';
+      message.value = 'Flight created successfully!'; //TODO
       newFlight.value = { destination: '', model: '', departureDate: '', seatsTotal: 4 };
       fetchFlights();
     } catch (err) {

@@ -1,16 +1,16 @@
 <template>
   <div class="register-container">
-    <h2>Create Your SkyBook Account</h2>
+    <h2> {{ t('create-your-account') }}</h2>
     <form @submit.prevent="register">
       
-        <input v-model="firstName" placeholder="First Name" required />
-        <input v-model="lastName" placeholder="Last Name" required />
+        <input v-model="firstName" :placeholder="t('first-name')" required />
+        <input v-model="lastName" :placeholder="t('last-name')" required />
       
-      <input v-model="email" type="email" placeholder="Email" required />
-      <input v-model="password" type="password" placeholder="Password" required />
-      <input v-model="phone" placeholder="Phone (optional)" />
-      <input v-model="dni" placeholder="DNI" required/>
-      <button type="submit">Register</button>
+      <input v-model="email" type="email" :placeholder="t('email')" required />
+      <input v-model="password" type="password" :placeholder="t('password')" required />
+      <input v-model="phone" :placeholder="t('phone-opt')" />
+      <input v-model="dni" :placeholder="t('dni')" required/>
+      <button type="submit">{{ t('register') }}</button>
     </form>
     <p v-if="error" class="message error">{{ error }}</p>
     <p v-if="success" class="message success">{{ success }}</p>
@@ -98,7 +98,7 @@
 </style>
 
   
-  <script setup>
+<script setup>
   import { ref } from 'vue';
   import { useRouter } from 'vue-router';
   import api from '../services/api';
@@ -135,6 +135,6 @@
       error.value = 'Registration failed. This email might already exist.';
     }
   };
-  </script>
+</script>
 
   
