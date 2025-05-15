@@ -4,7 +4,7 @@
       <nav class="nav-links">
         <router-link to="/flights">Flights</router-link>
         <router-link to="/bookings">Bookings</router-link>
-        <router-link v-if="isAdmin" to="/admin">Admin</router-link>
+        <router-link v-if="isAdmin()" to="/admin">Admin</router-link>
         <button @click="logout()">Logout</button>
       </nav>
     </header>
@@ -71,15 +71,22 @@
   }
 </style>
 
-<script>
-export default {
-  methods: {
-    logout(){
-      sessionStorage.removeItem('token');
-      this.$router.push({ name: 'Login' }); // Redirect to login
-    }
-  }
-}
+<script setup>
+  import { useRouter } from 'vue-router';
+
+  const router = useRouter();
+
+  const logout = () => {
+    sessionStorage.removeItem('token');
+    router.push({ name: 'Login' }); // Redirect to login
+  };
+  const token = sessionStorage.getItem('token');
+
+  const isAdmin = () => {
+    const decodedToken = jwtDecode(token);
+    const userRole = decodedToken.role;
+    return userRole === 'ADMIN';
+  };
 
 </script>
   

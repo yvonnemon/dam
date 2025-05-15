@@ -1,6 +1,6 @@
 <template>
   <div class="register-container">
-    <h2>Create Your Account</h2>
+    <h2>Create Your SkyBook Account</h2>
     <form @submit.prevent="register">
       
         <input v-model="firstName" placeholder="First Name" required />

@@ -111,13 +111,15 @@
             <tr>
               <th>User</th>
               <th>Flight</th>
+              <th>Booking Number</th>
               <th>Date</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="booking in bookings" :key="booking.id">
               <td>{{ booking.user?.email }}</td>
-              <td>{{ booking.flight?.destination }}</td>
+              <td>{{ booking.flight?.departureName }}</td>
+              <td>{{ booking.number }}</td>
               <td>{{ formatDate(booking.flight?.departureDate) }}</td>
             </tr>
           </tbody>

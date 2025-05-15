@@ -1,10 +1,12 @@
 <template>
   <div class="layout">
-    <AppHeader v-if="route.path !== '/login'" />
+    <AppHeader v-if="!['/register', '/login'].includes(route.path)"  />
 
     <main class="page-content">
       <router-view />
     </main>
+
+    <Footer />
   </div>
 </template>
 
@@ -56,7 +58,7 @@
 <script setup>
   import { useRoute } from 'vue-router';
   import AppHeader from './components/Header.vue'; 
-  
+  import Footer from './components/Footer.vue';
 
   const route = useRoute();
 
