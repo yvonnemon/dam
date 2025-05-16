@@ -19,7 +19,7 @@
             id="password"
             v-model="password"
             type="password"
-            placeholder="Enter your password"
+            :placeholder="t('enter-password')"
             required
           />
         </div>
@@ -84,13 +84,13 @@
     showModal.value = true;
   };
 
-  /*
+  
   
   const handleConfirmDownload = () => {
     showModal.value = false;
     downloadTicket(bookingIdToDownload.value);
   };
-  */
+  
   </script>
 
 <style scoped>

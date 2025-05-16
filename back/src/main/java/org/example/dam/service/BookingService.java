@@ -70,7 +70,7 @@ public class BookingService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         List<BookingDTO> bookings = new ArrayList<>();
-        for (Booking booking : bookingRepository.findBookingsByUser(user)) {
+        for (Booking booking : bookingRepository.findBookingsByUserOrderByStatusAsc(user)) {
             BookingDTO bookingDTO = entityToDto(booking);
             bookingDTO.setUser(null);
             bookings.add(bookingDTO);
@@ -79,7 +79,7 @@ public class BookingService {
         return bookings;
     }
 
-    public List<BookingDTO> findByUserAndStatusNot() {
+    public List<BookingDTO> findByUserAndStatus() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
 
         User user = userRepository.findByEmail(email)
@@ -109,10 +109,16 @@ public class BookingService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
         booking.setUser(user);
 
+
         if (booking.getId() == null) {
             booking.setStatus(BookingStatus.BOOKED);
             Flight flight = flightRepository.findById(booking.getFlightId())
                     .orElseThrow(() -> new EntityNotFoundException("Flight not found"));
+            boolean alreadyBooked = bookingRepository.existsByUserAndFlightAndStatus(user, flight, BookingStatus.BOOKED);
+
+            if (alreadyBooked) {
+                throw new IllegalStateException("You already have an active booking for this flight.");
+            }
 
             Booking bookingEntity = dtoToEntity(booking);
 

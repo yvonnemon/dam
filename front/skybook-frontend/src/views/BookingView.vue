@@ -29,16 +29,10 @@
           <p><strong>{{ t('flight-number') }}:</strong> {{ booking.flight.flightNumber }}</p>
            <p><strong>{{ t('price') }}:</strong> {{ booking.price }} €</p>
         </div>
-       <!-- <div :class="isActive ? 'button-with-icon active' : 'button-with-icon inactive'">
-          <span class="material-symbols-outlined">download</span>
-          <button @click="cancelBooking(booking.id)" :disabled="isDisabled(booking.status)"> {{ t('cancel-booking') }}</button>
-          <span class="material-symbols-outlined">
-          delete
-          </span>
-          <span class="material-symbols-outlined">download</span>
-        </div>-->
-         <button class="button-with-icon" @click="cancelBooking(booking.id)" :disabled="isDisabled(booking.status)"><span class="material-symbols-outlined">delete</span> {{ t('cancel-booking') }}</button>
-         <button class="button-with-icon download" @click="downloadTicket(booking.id)" ><span class="material-symbols-outlined">download</span> {{ t('download') }}</button>
+        <div class="action-buttons">
+          <button class="button-with-icon" @click="cancelBooking(booking.id)" :disabled="isDisabled(booking.status)"><span class="material-symbols-outlined">delete</span> {{ t('cancel-booking') }}</button>
+          <button class="button-with-icon download" @click="downloadTicket(booking.id)" ><span class="material-symbols-outlined">download</span> {{ t('download') }}</button>
+         </div>
       </div>
 
     </div>
@@ -126,10 +120,16 @@
     border: 1px solid #ddd; /* Lighter border */
   }
 
-  button:hover {
+  button:hover&:not(:disabled) {
     background-color: #c0392b;
   }
 
+  .action-buttons{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-content: center;
+  }
 
   .message {
     margin-top: 30px;
@@ -181,11 +181,9 @@
   const downloadTicket = async (bookingId) => {
     try {
     // const response = await fetch(`/api/booking/${bookingId}/ticket`);
-      const response = await api.get(`/booking/${bookingId}/ticket`, {
+      const response = await api.get(`/bookings/${bookingId}/ticket`, {
         responseType: 'blob',
       });
-      console.log("Response status:", response.status);
-
         const blob = response.data;
         const url = window.URL.createObjectURL(blob);
         const link = document.createElement('a');

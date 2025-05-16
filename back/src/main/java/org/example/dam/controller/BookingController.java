@@ -42,7 +42,7 @@ public class BookingController {
 
     @GetMapping("/user-booked")
     public ResponseEntity<List<BookingDTO>> findByUserAndStatusNot() {
-        List<BookingDTO> asd = bookingService.findByUserAndStatusNot();
+        List<BookingDTO> asd = bookingService.findByUserAndStatus();
         int a = asd.size();
         return ResponseEntity.ok(asd);
     }

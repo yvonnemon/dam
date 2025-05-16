@@ -4,21 +4,29 @@
         <h3 class="modal-title">{{ title }}</h3>
         <p class="modal-message">{{ message }}</p>
         <div class="modal-actions">
-          <button class="btn btn-confirm" @click="$emit('confirm')">Yes</button>
-          <button class="btn btn-cancel" @click="$emit('cancel')">No</button>
+          <button v-if="showConfirm" class="btn btn-confirm" @click="$emit('confirm')">Confirm</button>
+          <button v-if="showCancel" class="btn btn-cancel" @click="$emit('cancel')">Close</button>
         </div>
       </div>
     </div>
   </template>
   
-  <script setup>
+<script setup>
   defineProps({
-    visible: Boolean,
-    title: String,
-    message: String
-  });
+  visible: Boolean,
+  title: String,
+  message: String,
+  showConfirm: {
+    type: Boolean,
+    default: true
+  },
+  showCancel: {
+    type: Boolean,
+    default: true
+  }
+});
   defineEmits(['confirm', 'cancel']);
-  </script>
+</script>
   
 <style scoped>
   .modal-backdrop {

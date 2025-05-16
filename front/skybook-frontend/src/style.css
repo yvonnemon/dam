@@ -18,6 +18,7 @@ a {
   color: #646cff;
   text-decoration: inherit;
 }
+
 a:hover {
   color: #535bf2;
 }
@@ -46,43 +47,55 @@ button {
   cursor: pointer;
   transition: border-color 0.25s;
 }
+
 button:hover {
   border-color: #646cff;
 }
+
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
-  button:disabled {
-    background-color: #ccc; /* Gray background */
-    color: #777; /* Lighter text */
-    cursor: not-allowed; /* Change cursor to indicate it's disabled */
-    border: 1px solid #ddd; /* Lighter border */
+button:disabled {
+  background-color: #ccc;
+  /* Gray background */
+  color: #777;
+  /* Lighter text */
+  cursor: not-allowed;
+  /* Change cursor to indicate it's disabled */
+  border: 1px solid #ddd;
+  /* Lighter border */
+}
+
+.button-with-icon {
+  
+  max-width: 10dvw;
+  width: 100%;
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 25px;
+  margin-bottom: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+
+  &.download {
+    background-color: #0559a3;
+    &:hover{
+      background-color: #007fff;
+    }
   }
 
-  .button-with-icon {
-    width: 100%;
-    background-color: #e74c3c;
-    color: white;
-    border: none;
-    border-radius: 25px;
-    margin-bottom: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
-    
-    &.download {
-      background-color: #0559a3;
-    }
-    span {
-      margin-right: 0.5rem;
-    }
+  span {
+    margin-right: 0.5rem;
   }
+}
 
 .card {
   padding: 2em;
@@ -91,7 +104,7 @@ button:focus-visible {
 #app {
   width: 100%;
   margin: 0 auto;
- /* padding: 2rem;*/
+  /* padding: 2rem;*/
   text-align: center;
 }
 
@@ -100,31 +113,32 @@ button:focus-visible {
     color: #213547;
     background-color: #ffffff;
   }
+
   a:hover {
     color: #747bff;
   }
+
   button {
     background-color: #f9f9f9;
   }
 }
 
-  .h3-icons {
-     display: flex;
-      flex-direction: column;
-      flex-wrap: wrap;
-      justify-content: center;
-      align-items: center;
-  }
+.h3-icons {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+}
 
 .p-icons {
   display: flex;
-    flex-direction: row;
-    justify-content: center;
+  flex-direction: row;
+  justify-content: center;
 
-    span {
-      align-self: flex-end;
-      margin-bottom: 3px;
-      padding-right: 5px;
-    }
+  span {
+    align-self: flex-end;
+    margin-bottom: 3px;
+    padding-right: 5px;
+  }
 }
-

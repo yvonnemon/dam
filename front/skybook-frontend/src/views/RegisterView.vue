@@ -1,21 +1,31 @@
 <template>
   <div class="register-container">
-    <h2> Create your account </h2>
+    <h2>{{ t('create-your-account') }}</h2>
     <form @submit.prevent="register">
-      
-        <input v-model="firstName" :placeholder="t('first-name')" required />
-        <input v-model="lastName" :placeholder="t('last-name')" required />
-      
+      <input v-model="firstName" :placeholder="t('first-name')" required />
+      <input v-model="lastName" :placeholder="t('last-name')" required />
       <input v-model="email" type="email" :placeholder="t('email')" required />
-      <input v-model="password" type="password" :placeholder="t('password')" required />
+      <input v-model="password" type="password" :placeholder="t('password')" required autocomplete="off" />
       <input v-model="phone" :placeholder="t('phone-opt')" />
-      <input v-model="dni" :placeholder="t('dni')" required/>
+      <input v-model="dni" :placeholder="t('dni')" required />
       <button type="submit">{{ t('register') }}</button>
     </form>
+
+    <ConfirmModal
+      :visible="showModal"
+      :title="modalTitle"
+      :message="modalMessage"
+      :show-confirm="showConfirm"
+      :show-cancel="true"
+      @confirm="handleConfirmDownload"
+      @cancel="showModal = false"
+    />
+
     <p v-if="error" class="message error">{{ error }}</p>
     <p v-if="success" class="message success">{{ success }}</p>
   </div>
 </template>
+
 
 <style scoped>
   .register-container {
@@ -65,6 +75,10 @@
     outline: none;
   }
 
+  .hide-confirm .modal-box .modal-actions .btn.btn-confirm {
+    display: none;
+  }
+
   button {
     padding: 12px;
     font-size: 16px;
@@ -99,26 +113,34 @@
 
   
 <script setup>
-  import { ref } from 'vue';
+  import { ref, nextTick } from 'vue';
   import { useRouter } from 'vue-router';
   import api from '../services/api';
+  import ConfirmModal from '../components/CustomModal.vue';
   import { useI18n } from 'vue-i18n';
+
   const { t } = useI18n();
   const router = useRouter();
-  
+
   const firstName = ref('');
   const lastName = ref('');
   const email = ref('');
   const password = ref('');
   const phone = ref('');
   const dni = ref('');
+
   const error = ref('');
   const success = ref('');
-  
+
+  const showModal = ref(false);
+  const modalMessage = ref('');
+  const modalTitle = ref('');
+  const showConfirm = ref(false);
+
   const register = async () => {
     error.value = '';
     success.value = '';
-  
+
     try {
       const response = await api.post('/auth/register', {
         firstName: firstName.value,
@@ -126,15 +148,37 @@
         email: email.value,
         password: password.value,
         phone: phone.value,
-        dni: dni.value,
-        
+        dni: dni.value
       });
-  
+
       success.value = 'Registration successful! Redirecting to login...';
-      setTimeout(() => router.push('/login'), 2000);
+      await openDownloadModal(
+        'Registered successfully! Thanks for joining',
+        success.value,
+        true // 
+      );
+
     } catch (err) {
       error.value = 'Registration failed. This email might already exist.';
+      await openDownloadModal(
+        'Oops! Something went wrong with registration',
+        error.value,
+        false // hide confirm on error
+      );
     }
+  };
+
+  const openDownloadModal = async (title, text, confirmVisible = false) => {
+    showConfirm.value = confirmVisible;
+    modalTitle.value = title;
+    modalMessage.value = text;
+    await nextTick();
+    showModal.value = true;
+  };
+
+  const handleConfirmDownload = () => {
+    showModal.value = false;
+    setTimeout(() => router.push('/login'), 2000);
   };
 </script>
 

@@ -24,13 +24,14 @@
     "book-a-flight": "Reservar un Vuelo",
     "loading-available flights": "Cargando vuelos disponibles",
     "no-flights-available-at-the-moment": "No hay vuelos disponibles en este momento",
-    "seats": "Asientos",
+    "seats": "Disponibilidad de asientos",
     "already-booked": "Reservado",
     "book": "Reservar",
     "enter-your-email": "Introduce tu correo electrónico",
     "password": "Contraseña",
     "email": "Correo electrónico",
     "log-in": "Iniciar sesión",
+    "enter-password": "Introduzca su contraseña",
     "create-your-account": "Crea tu cuenta en SkyBook",
     "first-name": "Nombre",
     "last-name": "Apellidos",
@@ -49,6 +50,5 @@
     "terms": "Terminos y condiciones",
     "privacy": "Privacidad",
     "language": "Idioma",
-
     "404-message": "Lo sentimos, la página que buscas no existe o no tienes permiso para acceder a ella."
 }

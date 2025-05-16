@@ -48,7 +48,8 @@
 
 @media (min-width: 1024px) {
   .page-content > div{
-    max-width: 50dvw;
+    width: 100%;
+    max-width: 90rem;
     flex: 1;
     padding: 20px;    
   }
