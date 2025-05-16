@@ -6,6 +6,8 @@ import { createI18n } from 'vue-i18n';
 import en from './i18n/en.json';
 import es from './i18n/es.json';
 import pt from './i18n/pt.json';
+import Toast from "vue-toastification";
+import "vue-toastification/dist/index.css";
 
 const i18n = createI18n({
     legacy: false, // allows Composition API use
@@ -14,4 +16,12 @@ const i18n = createI18n({
     messages: { en, es, pt }
 });
 
-createApp(App).use(i18n).use(router).mount('#app');
+const options = {
+    // You can set your default options here
+    timeout: 5000,
+    closeOnClick: true,
+    position: 'bottom-center',
+    type: 'info'
+};
+
+createApp(App).use(i18n).use(Toast, options).use(router).mount('#app');

@@ -30,13 +30,22 @@
            <p><strong>{{ t('price') }}:</strong> {{ booking.price }} €</p>
         </div>
         <div class="action-buttons">
-          <button class="button-with-icon" @click="cancelBooking(booking.id)" :disabled="isDisabled(booking.status)"><span class="material-symbols-outlined">delete</span> {{ t('cancel-booking') }}</button>
+          <button class="button-with-icon" @click="openModal(booking.id)" :disabled="isDisabled(booking.status)"><span class="material-symbols-outlined">delete</span> {{ t('cancel-booking') }}</button>
           <button class="button-with-icon download" @click="downloadTicket(booking.id)" ><span class="material-symbols-outlined">download</span> {{ t('download') }}</button>
          </div>
       </div>
 
     </div>
-    
+      <ConfirmModal
+        :visible="showModal"
+        :title="modalTitle"
+        :message="modalMessage"
+        :show-confirm="showConfirm"
+        :show-cancel="true"
+        @confirm="confirmModal"
+        @cancel="showModal = false"
+      />
+
     <p v-if="message" class="message">{{ message }}</p>
   </div>
 </template>
@@ -71,6 +80,8 @@
   }
 
   .booking-card {
+    display: flex;
+    flex-direction: column;
     background-color: #ffffff;
     border: 1px solid #ebfbff;
     border-radius: 10px;
@@ -125,6 +136,7 @@
   }
 
   .action-buttons{
+    margin-top: auto;
     display: flex;
     flex-direction: column;
     flex-wrap: wrap;
@@ -148,14 +160,24 @@
 </style>
 
 <script setup>
-  import { ref, onMounted } from 'vue';
+  import { ref, onMounted, nextTick } from 'vue';
   import api from '../services/api';
   import { useI18n } from 'vue-i18n';
+  import { useToast } from 'vue-toastification';
+  import ConfirmModal from '../components/CustomModal.vue';
+
   const { t } = useI18n();
 
   const bookings = ref([]);
   const loading = ref(true);
   const message = ref('');
+  const toast = useToast();
+
+  const showModal = ref(false);
+  const modalMessage = ref('');
+  const modalTitle = ref('');
+  const showConfirm = ref(true);
+  const flightSelected = ref('');
 
   const fetchBookings = async () => {
     try {
@@ -171,9 +193,11 @@
   const cancelBooking = async (id) => {
     try {
       await api.delete(`/bookings/${id}`);
+      showSuccess('Successfully cancelled')
       message.value = 'Booking canceled.';
       await fetchBookings();
     } catch (err) {
+      showError();
       message.value = 'Failed to cancel booking.';
     }
   };
@@ -191,10 +215,11 @@
         link.download = `ticket-${bookingId}.pdf`;
         link.click();
         window.URL.revokeObjectURL(url);
+        showSuccess('Downloaded successfully')
       } catch (error) {
         console.error('Download error:', error);
 
-        // Optional: read backend error message if response exists
+        showError();
         if (error.response && error.response.data) {
           const reader = new FileReader();
           reader.onload = () => {
@@ -205,6 +230,27 @@
     }
   };
 
+  const openModal = async (flightId) => {
+    flightSelected.value = flightId;
+    modalTitle.value = "Cancel Booking";
+    modalMessage.value = "Are you sure you want to cancel the booking?";
+    await nextTick();
+    showModal.value = true;
+  };
+
+  const confirmModal = async () => {
+    await cancelBooking(flightSelected.value)
+    fetchBookings();
+    showModal.value = false;
+  };
+
+  const showSuccess = (message) => {
+   toast.success(message);
+  };
+
+  const showError = () => {
+    toast.error('Something went wrong. Please try again.');
+  };
 
   const formatDate = (dateStr) => {
     return new Date(dateStr).toLocaleString();

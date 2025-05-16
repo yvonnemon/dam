@@ -2,7 +2,7 @@ package org.example.dam.model;
 
 import jakarta.persistence.*;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 
 @Entity
@@ -28,7 +28,7 @@ public class Flight {
     private Airport destinationAirport;
 
     @Column(nullable = false)
-    private LocalDate departureDate;
+    private LocalDateTime departureDate;
 
     @Column(nullable = false)
     private Double duration;
@@ -76,11 +76,11 @@ public class Flight {
         this.flightNumber = flightNumber;
     }
 
-    public LocalDate getDepartureDate() {
+    public LocalDateTime getDepartureDate() {
         return departureDate;
     }
 
-    public void setDepartureDate(LocalDate departure) {
+    public void setDepartureDate(LocalDateTime departure) {
         this.departureDate = departure;
     }
 

@@ -2,7 +2,7 @@ package org.example.dam.model;
 
 import jakarta.persistence.*;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Table(name = "booking")
 @Entity
@@ -17,7 +17,7 @@ public class Booking {
     private String bookingNumber;
 
     @Column(nullable = false)
-    private LocalDate datePurchase;
+    private LocalDateTime datePurchase;
 
     @Column(nullable = false)
     private Double price;
@@ -82,11 +82,11 @@ public class Booking {
         this.status = status;
     }
 
-    public LocalDate getDatePurchase() {
+    public LocalDateTime getDatePurchase() {
         return datePurchase;
     }
 
-    public void setDatePurchase(LocalDate datePurchase) {
+    public void setDatePurchase(LocalDateTime datePurchase) {
         this.datePurchase = datePurchase;
     }
 }

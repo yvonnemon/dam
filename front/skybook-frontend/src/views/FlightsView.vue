@@ -286,6 +286,7 @@ h2 {
   import api from '../services/api';
   import ConfirmModal from '../components/CustomModal.vue';
   import { useI18n } from 'vue-i18n';
+  import { useToast } from 'vue-toastification';
   const { t } = useI18n();
 
   const flights = ref([]);
@@ -299,6 +300,7 @@ h2 {
   const modalMessage = ref('');
   const modalTitle = ref('');
   const showConfirm = ref(true);
+  const toast = useToast();
 
   const flightSelected = ref('');
 
@@ -327,8 +329,10 @@ h2 {
         flightId: '',
         datePurchase: new Date()
       };
+      showSuccess('Flight booked successfully')
       await fetchFlights(); // Refresh availability
     } catch (err) {
+      showError();
       message.value = 'Could not book flight. Are you already booked?';
     }
   };
@@ -358,7 +362,25 @@ h2 {
     }
   };
 
-  const formatDate = (d) => new Date(d).toLocaleString();
+  const showSuccess = (message) => {
+   toast.success(message);
+  };
+
+  const showError = () => {
+    toast.error('Something went wrong. Please try again.');
+  };
+
+  
+  const formatDate = (d) => {
+    const date = new Date(d);
+    const day = String(date.getDate()).padStart(2, '0'); // Add leading zero
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Add leading zero, month starts at 0
+    const year = date.getFullYear();
+    const hours = String(date.getHours()).padStart(2, '0'); // Add leading zero for hours
+    const minutes = String(date.getMinutes()).padStart(2, '0'); // Add leading zero for minutes
+
+    return `${day}-${month}-${year} ${hours}:${minutes}`;
+  };
 
   const isAlreadyBooked = (flightId) => {
     return userBookings.value.includes(flightId);

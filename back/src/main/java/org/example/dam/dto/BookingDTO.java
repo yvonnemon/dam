@@ -4,7 +4,7 @@ import org.example.dam.model.BookingStatus;
 import org.example.dam.model.Flight;
 import org.example.dam.model.User;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 public class BookingDTO {
@@ -13,7 +13,7 @@ public class BookingDTO {
 
     private String bookingNumber;
 
-    private LocalDate datePurchase;
+    private LocalDateTime datePurchase;
 
     private Double price;
 
@@ -40,11 +40,11 @@ public class BookingDTO {
         this.bookingNumber = number;
     }
 
-    public LocalDate getDatePurchase() {
+    public LocalDateTime getDatePurchase() {
         return datePurchase;
     }
 
-    public void setDatePurchase(LocalDate datePurchase) {
+    public void setDatePurchase(LocalDateTime datePurchase) {
         this.datePurchase = datePurchase;
     }
 

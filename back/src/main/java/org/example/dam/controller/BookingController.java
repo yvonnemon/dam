@@ -49,6 +49,7 @@ public class BookingController {
 
     @GetMapping("/")
     public ResponseEntity<List<BookingDTO>> getAllBookings() {
+
         return ResponseEntity.ok(bookingService.findAll());
     }
 

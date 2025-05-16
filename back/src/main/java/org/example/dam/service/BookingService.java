@@ -57,6 +57,8 @@ public class BookingService {
 
         List<BookingDTO> bookings = new ArrayList<>();
         for (Booking booking : bookingRepository.findAll()) {
+            booking.getUser().setPassword(null);
+           // booking.getUser().setBooking(null);
             bookings.add(entityToDto(booking));
         }
 

@@ -26,13 +26,6 @@
                 track-by="id"
               />
             </div>
-          <!-- Display selected airport  
-
-                      <div v-if="selectedAirport" >
-              <p>Selected Airport: {{ selectedAirport.name }}</p>
-            </div>
-           -->
-
 
           <div class="same-size">
 
@@ -48,12 +41,6 @@
                 track-by="id"
               />
             </div>
-            <!--<select v-model="newFlight.destinationId" placeholder="Destination" >
-              <option value="" disabled selected>Choose a destination airport</option>
-              <option v-for="airport in airports" :value="airport.id">
-                {{ airport.name }}
-              </option>
-            </select>-->
           </div>
           <div class="same-size">
           <select v-model="newFlight.modelId" :placeholder="t('Date')">
@@ -68,7 +55,7 @@
           </div>
           
         </div>
-        <button type="submit"> {{ t('create-flight') }}</button>
+        <button class="button-with-icon add-flight" type="submit"><span class="material-symbols-outlined">add</span> {{ t('create-flight') }}</button>
       </form>
     </section>
 
@@ -95,7 +82,7 @@
               <td>{{ flight.modelName }}</td>
               <td>
                 
-                <button @click="deleteFlight(flight.id)"> {{ t('delete') }}</button>
+                <button class="button-with-icon" @click="deleteFlight(flight.id)"><span class="material-symbols-outlined">delete</span> {{ t('delete') }}</button>
               </td>
             </tr>
           </tbody>
@@ -110,7 +97,8 @@
           <thead>
             <tr>
               <th>{{ t('user') }} </th>
-              <th>{{ t('flight') }} </th>
+              <th>{{ t('departure') }} </th>
+              <th>{{ t('destination') }} </th>
               <th>{{ t('booking-number') }} </th>
               <th>{{ t('date') }} </th>
             </tr>
@@ -118,7 +106,8 @@
           <tbody>
             <tr v-for="booking in bookings" :key="booking.id">
               <td>{{ booking.user?.email }}</td>
-              <td>{{ booking.flight?.departureName }}</td>
+              <td>{{ booking.flight?.departureAirport.name }} - {{ booking.flight?.departureAirport.iata }}</td>
+              <td>{{ booking.flight?.destinationAirport.name }} - {{ booking.flight?.destinationAirport.iata }}</td>
               <td>{{ booking.number }}</td>
               <td>{{ formatDate(booking.flight?.departureDate) }}</td>
             </tr>
@@ -126,6 +115,15 @@
         </table>
       </div>
     </section>
+      <ConfirmModal
+        :visible="showModal"
+        :title="modalTitle"
+        :message="modalMessage"
+        :show-confirm="showConfirm"
+        :show-cancel="true"
+        @confirm="confirmModal"
+        @cancel="showModal = false"
+      />
 
     <p v-if="message" class="message">{{ message }}</p>
   </div>
@@ -169,6 +167,11 @@
     align-items: stretch;
   }
 
+  form {
+    display: flex;
+    flex-direction: column;
+  }
+
   form input {
     padding: 10px;
     border-radius: 6px;
@@ -187,15 +190,23 @@
     padding: 10px 16px;
     border: none;
     border-radius: 6px;
-    background-color: #3498db;
+    background-color: rgba(204, 0, 0, 0.964);
     color: white;
     font-weight: bold;
     cursor: pointer;
     transition: background-color 0.3s ease;
   }
 
+  .add-flight {
+    align-self: center;
+    background-color: #0066d0;
+    &:hover {
+      background-color: #0559A3;
+    }
+  }
+
   button:hover {
-    background-color: #2980b9;
+    background-color: #dc3e3e;
   }
 
   .card {
@@ -258,8 +269,10 @@
   import { ref, onMounted } from 'vue';
   import api from '../services/api';
   import Multiselect from 'vue-multiselect';
+  import { useToast } from 'vue-toastification';
   import 'vue-multiselect/dist/vue-multiselect.css';
   import { useI18n } from 'vue-i18n';
+  import ConfirmModal from '../components/CustomModal.vue';
   const { t } = useI18n();
 
   const flights = ref([]);
@@ -267,7 +280,14 @@
   const airports = ref([]);
   const planes = ref([]);
 
+  const showModal = ref(false);
+  const modalMessage = ref('');
+  const modalTitle = ref('');
+  const showConfirm = ref(true);
+  const flightSelected = ref('');
+
   const message = ref('');
+  const toast = useToast();
 
   const newFlight = ref({
     departureId: '',
@@ -285,9 +305,11 @@
       }); 
 
       message.value = 'Flight created successfully!'; //TODO
+      showSuccess("Successfully created flight");
       newFlight.value = { destination: '', model: '', departureDate: '', seatsTotal: 4 };
       fetchFlights();
     } catch (err) {
+      showError();
       message.value = 'Error creating flight.';
     }
   };
@@ -295,10 +317,11 @@
   const deleteFlight = async (flightId) => {
     try {
       await api.delete(`/flights/${flightId}`);
-
+      showSuccess("Successfully created flight");
       message.value = 'Flight deleted successfully!';
       fetchFlights(); // Refresh the list after deletion
     } catch (err) {
+      showError();
       message.value = 'Error deleting flight.';
     }
   };
@@ -315,6 +338,13 @@
     fetchPlanes();
   });
 
+  const showSuccess = (message) => {
+   toast.success(message);
+  };
+
+  const showError = () => {
+    toast.error('Something went wrong. Please try again.');
+  };
   const fetchFlights = async () => {
     const res = await api.get('/flights/');
     flights.value = res.data;
@@ -322,6 +352,7 @@
 
   const fetchBookings = async () => {
     const res = await api.get('/bookings/'); // Make sure this endpoint exists and is admin-only
+    console.log(res.data)
     bookings.value = res.data;
   };
 

@@ -1,6 +1,5 @@
 package org.example.dam.dto;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class FlightDTO {
@@ -11,7 +10,7 @@ public class FlightDTO {
     private String modelName;
     private int seatsTotal;
     private int seatsAvailable;
-    private LocalDate departureDate;
+    private LocalDateTime departureDate;
     private Double duration;
 
     private Long departureId;     // ID of departure airport
@@ -86,11 +85,11 @@ public class FlightDTO {
         this.seatsAvailable = seatsAvailable;
     }
 
-    public LocalDate getDepartureDate() {
+    public LocalDateTime getDepartureDate() {
         return departureDate;
     }
 
-    public void setDepartureDate(LocalDate departureDate) {
+    public void setDepartureDate(LocalDateTime departureDate) {
         this.departureDate = departureDate;
     }
 

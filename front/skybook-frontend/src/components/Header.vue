@@ -4,7 +4,7 @@
       <nav class="nav-links">
         <router-link to="/flights"> {{ t('flights') }} </router-link>
         <router-link to="/bookings"> {{ t('bookings') }} </router-link>
-       <!-- <router-link v-if="isAdmin()" to="/admin"> {{ t('admin') }} </router-link>-->
+        <router-link v-if="isAdmin()" to="/admin"> {{ t('admin') }} </router-link>
         <button @click="logout()"> {{ t('logout') }} </button>
       </nav>
     </header>
@@ -74,6 +74,8 @@
 <script setup>
   import { useRouter } from 'vue-router';
   import { useI18n } from 'vue-i18n';
+  import { jwtDecode } from 'jwt-decode';
+
   const { t } = useI18n();
   const router = useRouter();
 

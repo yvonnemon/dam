@@ -42,7 +42,9 @@ public class User {
     //TODO
     private LocalDate dateOfBirth;
 
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Booking> booking;
 
     public List<Booking> getBooking() {
