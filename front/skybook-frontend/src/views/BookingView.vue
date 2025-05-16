@@ -52,6 +52,7 @@
 
 <style scoped>
   .bookings-view {
+    border-radius: 10px;
     max-width: 960px;
     margin: 0 auto;
     padding: 24px;

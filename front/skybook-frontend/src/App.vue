@@ -38,9 +38,10 @@
 }
 
 .page-content {
+  background-image: url('./assets/fondo2.webp');
   flex: 1;
   padding: 20px;
-
+  background-size: cover;
   div {
     background-color: #e0edf9e0;
   }

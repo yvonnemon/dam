@@ -6,14 +6,7 @@
       <h3>{{ t('create-new-flight') }}</h3>
       <form @submit.prevent="createFlight">
         <div class="form-grid">
-          
-          <!--<select v-model="newFlight.departureId" placeholder="Departure">
-            <option value="" disabled selected>Choose a departure airport</option>
-            <option v-for="airport in airports" :value="airport.id">
-              {{ airport.name }}
-            </option>
-          </select>-->
-          
+                   
             <div class="same-size">
               <multiselect
                 
@@ -43,7 +36,7 @@
             </div>
           </div>
           <div class="same-size">
-          <select v-model="newFlight.modelId" :placeholder="t('Date')">
+          <select v-model="newFlight.modelId" :placeholder="t('date')">
             <option v-for="plane in planes" :value="plane.id">
               {{ plane.name }}
             </option>
@@ -61,6 +54,10 @@
 
     <section>
       <h3> {{ t('all-flights') }}</h3>
+        <div class="filters">
+          <input type="date" v-model="filterDate" class="filter-input" />
+          <input type="text" v-model="filterAirport" :placeholder="t('search-by-airport')" class="filter-input" />
+        </div>
       <div class="table-container">
         <table>
           <thead>
@@ -73,7 +70,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="flight in flights" :key="flight.id">
+            <tr v-for="flight in filteredFlights" :key="flight.id">
               <td>{{ flight.departureName }} - {{ flight.departureIata }}</td>
 
               <td>{{ flight.destinationName }} - {{ flight.destinationIata }}</td>
@@ -82,7 +79,7 @@
               <td>{{ flight.modelName }}</td>
               <td>
                 
-                <button class="button-with-icon" @click="deleteFlight(flight.id)"><span class="material-symbols-outlined">delete</span> {{ t('delete') }}</button>
+                <button class="button-with-icon" @click="openModal(flight.id)"><span class="material-symbols-outlined">delete</span> {{ t('delete') }}</button>
               </td>
             </tr>
           </tbody>
@@ -92,6 +89,12 @@
 
     <section>
       <h3> {{ t('all-bookings') }}</h3>
+        <div class="filters booking">
+          <input class="filter-input" v-model="filterUser" :placeholder="t('admin-page.search-user')" />
+          <input class="filter-input" v-model="filterDeparture" :placeholder="t('admin-page.search-departure')" />
+          <input class="filter-input" v-model="filterDestination" :placeholder="t('admin-page.search-destination')" />
+          <input class="filter-input" v-model="filterBookingNumber" :placeholder="t('admin-page.search-booking-number')" />
+        </div>
       <div class="table-container">
         <table>
           <thead>
@@ -104,7 +107,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="booking in bookings" :key="booking.id">
+            <tr v-for="booking in filteredBookings" :key="booking.id">
               <td>{{ booking.user?.email }}</td>
               <td>{{ booking.flight?.departureAirport.name }} - {{ booking.flight?.departureAirport.iata }}</td>
               <td>{{ booking.flight?.destinationAirport.name }} - {{ booking.flight?.destinationAirport.iata }}</td>
@@ -132,6 +135,7 @@
 <style scoped>
 
   .admin-view {
+    border-radius: 10px;
     max-width: 960px;
     margin: 0 auto;
     padding: 24px;
@@ -262,17 +266,51 @@
   tr:hover {
     background-color: #f9f9f9;
   }
+
+  /** filter */
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding: 1rem;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    margin: auto;
+    margin-bottom: 1rem;
+    &.booking {
+      max-width: 60dvw;
+    }
+  }
+  
+  .filter-input {
+  padding: 0.6rem 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+  flex: 1;
+  min-width: 200px;
+  transition: border-color 0.3s;
+  }
+  
+  .filter-input:focus {
+  border-color: #007bff;
+  outline: none;
+  }
+
 </style>
 
 
 <script setup>
-  import { ref, onMounted } from 'vue';
+  import { ref, onMounted, nextTick, computed } from 'vue';
   import api from '../services/api';
   import Multiselect from 'vue-multiselect';
   import { useToast } from 'vue-toastification';
   import 'vue-multiselect/dist/vue-multiselect.css';
   import { useI18n } from 'vue-i18n';
   import ConfirmModal from '../components/CustomModal.vue';
+
   const { t } = useI18n();
 
   const flights = ref([]);
@@ -280,6 +318,7 @@
   const airports = ref([]);
   const planes = ref([]);
 
+  //modal y toast
   const showModal = ref(false);
   const modalMessage = ref('');
   const modalTitle = ref('');
@@ -288,6 +327,15 @@
 
   const message = ref('');
   const toast = useToast();
+
+  //filters
+  const filterDate = ref('');
+  const filterAirport = ref('');
+
+  const filterUser = ref('');
+  const filterDeparture = ref('');
+  const filterDestination = ref('');
+  const filterBookingNumber = ref('');
 
   const newFlight = ref({
     departureId: '',
@@ -338,6 +386,20 @@
     fetchPlanes();
   });
 
+  const openModal = async (flightId) => {
+    flightSelected.value = flightId;
+    modalTitle.value = "Delete Flight";
+    modalMessage.value = "Are you sure you want to delete this flight?";
+    await nextTick();
+    showModal.value = true;
+  };
+
+  const confirmModal = async () => {
+    await deleteFlight(flightSelected.value)
+    fetchBookings();
+    showModal.value = false;
+  };
+
   const showSuccess = (message) => {
    toast.success(message);
   };
@@ -345,6 +407,8 @@
   const showError = () => {
     toast.error('Something went wrong. Please try again.');
   };
+
+
   const fetchFlights = async () => {
     const res = await api.get('/flights/');
     flights.value = res.data;
@@ -352,7 +416,6 @@
 
   const fetchBookings = async () => {
     const res = await api.get('/bookings/'); // Make sure this endpoint exists and is admin-only
-    console.log(res.data)
     bookings.value = res.data;
   };
 
@@ -366,6 +429,7 @@
     planes.value = res.data;
   };
 
+
   const formatDate = (d) => {
     const date = new Date(d);
     const day = String(date.getDate()).padStart(2, '0'); // Add leading zero
@@ -376,5 +440,33 @@
 
     return `${day}-${month}-${year} ${hours}:${minutes}`;
   };
+
+  const filteredFlights = computed(() => {
+    return flights.value.filter(flight => {
+      const matchesDate = !filterDate.value || flight.departureDate.startsWith(filterDate.value);
+      const matchesAirport =
+        !filterAirport.value ||
+        flight.departureName.toLowerCase().includes(filterAirport.value.toLowerCase()) ||
+        flight.destinationName.toLowerCase().includes(filterAirport.value.toLowerCase());
+
+      return matchesDate && matchesAirport;
+    });
+  });
+
+  const filteredBookings = computed(() => {
+  return bookings.value.filter(booking => {
+    const user = booking.user?.email?.toLowerCase() || '';
+    const dep = booking.flight?.departureAirport;
+    const dest = booking.flight?.destinationAirport;
+    const number = booking.number?.toLowerCase() || '';
+
+    return (
+      user.includes(filterUser.value.toLowerCase()) &&
+      `${dep?.name} ${dep?.iata}`.toLowerCase().includes(filterDeparture.value.toLowerCase()) &&
+      `${dest?.name} ${dest?.iata}`.toLowerCase().includes(filterDestination.value.toLowerCase()) &&
+      number.includes(filterBookingNumber.value.toLowerCase())
+    );
+  });
+});
    
 </script>

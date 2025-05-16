@@ -32,7 +32,7 @@
             </div>
             <div class="flight-route">
               <span class="airport">{{ flight.departureIata }} - {{ flight.departureName }}</span>
-              <span class="material-symbols-outlined">travel</span>
+              
               <span class="airport destination">{{ flight.destinationIata }} - {{ flight.destinationName }} </span>
             </div>
             <div class="airline-code">
@@ -70,6 +70,7 @@
 
 <style scoped>
 .book-flight-view {
+  border-radius: 10px;
   max-width: 960px;
   margin: 0 auto;
   padding: 24px;
@@ -174,7 +175,7 @@ h2 {
   .airline-code {
     text-align: center;
     display: flex;
-    justify-content: space-between;
+    justify-content: space-evenly;
     margin-top: 8px;
     font-size: 0.85em;
     color: #444;
