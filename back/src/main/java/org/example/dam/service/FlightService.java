@@ -43,58 +43,14 @@ public class FlightService {
     }
 
     public FlightDTO save(FlightDTO flight) {
-//        if(flight.getId() == null) {
-//            flight.setFlightNumber("SB" + flight.getDepartureDate().toString());
-//
-//            Airport departure = airportRepository.findById(flight.getDepartureId())
-//                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Airport not found"));
-//
-//            Airport destination = airportRepository.findById(flight.getDestinationId())
-//                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Airport not found"));
-//
-//            double disntance = Util.getDistanceFromLatLonInKm(departure.getLatitude(), departure.getLongitude(), destination.getLatitude(), destination.getLongitude());
-//            flight.setDuration(disntance / 750.0); //750 km/h es la velocidad media de crucero de un jet privado
-//            Plane plane = planeRepository.findById(flight.getModelId())
-//                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Plane model not found"));
-//            flight.set
-//        }
         return entityToDto(flightRepository.save(dtoToEntity(flight)));
     }
 
-    //TODO tiene que returnear algo
+
     public void delete(Long flight) {
         flightRepository.deleteById(flight);
     }
 
-   /* private Flight dtoToEntity(FlightDTO dto) {
-        Flight flight = new Flight();
-        if(dto.getId() == null) {
-            flight.setFlightNumber("SB"+dto.getDepartureDate().toString());
-           // dto.setSeatsAvailable(entity.getPlane().getCapacity()-entity.getSeatsReserved());
-            //flight.setSeatsReserved(dto.get);
-        } else {
-            flight.setFlightNumber(dto.getFlightNumber());
-        }
-        //la entidad neceista el aeropuerto y el avion.classes
-        Airport departure = airportRepository.findById(dto.getDepartureId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Airport not found"));
-
-        Airport destination = airportRepository.findById(dto.getDestinationId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Airport not found"));
-
-        flight.setDepartureAirport(departure);
-        flight.setDestinationAirport(destination);
-
-        flight.setDepartureDate(dto.getDepartureDate());
-
-        double disntance = Util.getDistanceFromLatLonInKm(departure.getLatitude(), departure.getLongitude(), destination.getLatitude(), destination.getLongitude());
-        flight.setDuration( disntance/750.0 ); //750 km/h es la velocidad media de crucero de un jet privado
-        Plane plane = planeRepository.findById(dto.getModelId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Plane model not found"));
-        flight.setPlane(plane);
-
-        return flight;
-    }*/
    private Flight dtoToEntity(FlightDTO dto) {
        try {
            Flight flight = new Flight();
