@@ -1,7 +1,7 @@
 <template>
   <header class="site-header">
     <div class="header-top">
-      <h1 class="logo">✈️ SkyBook</h1>
+      <router-link to="/flights" class="link-home"><h1 class="logo">✈️ SkyBook</h1></router-link>
       <button class="menu-toggle" @click="isMenuOpen = !isMenuOpen">
         <span class="material-symbols-outlined">menu</span>
       </button>
@@ -10,6 +10,7 @@
     <nav class="nav-links" :class="{ open: isMenuOpen }">
       <router-link to="/flights">{{ t('flights') }}</router-link>
       <router-link to="/bookings">{{ t('bookings') }}</router-link>
+      <router-link v-if="isAdmin()" to="/register">{{ t('register') }}</router-link>
       <router-link v-if="isAdmin()" to="/admin">{{ t('admin') }}</router-link>
       <button @click="logout()">{{ t('logout') }}</button>
     </nav>
@@ -18,6 +19,7 @@
 
   
 <style scoped>
+
 .site-header {
   background-color: #0a3b6c;
   color: white;
@@ -35,13 +37,37 @@
   padding: 1.25rem 10dvw;
 }
 
+
+  a:link {
+    text-decoration: none;
+    color: white;
+  }
+
+  a:visited {
+    text-decoration: none;
+    color: white;
+  }
+
+  a:hover {
+    text-decoration: none;
+    color: white;
+  }
+
+  a:active {
+    text-decoration: none;
+    color: white;
+  }
+
+
 .logo {
+  text-decoration: none;
   font-size: 25px;
   font-weight: bold;
   margin: 0;
   display: flex;
   align-items: center;
   gap: 8px;
+
 }
 
 .menu-toggle {

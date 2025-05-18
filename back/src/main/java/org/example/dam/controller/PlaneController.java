@@ -48,7 +48,7 @@ public class PlaneController {
                             return planeService.save(plane);
                         })
                         .orElseGet(() -> {
-                            newPlane.setId(id); // optional: set ID manually
+                            newPlane.setId(id);
                             return planeService.save(newPlane);
                         })
         );

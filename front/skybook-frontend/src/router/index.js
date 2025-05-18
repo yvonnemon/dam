@@ -27,24 +27,21 @@ const router = createRouter({
   routes
 });
 
-// Global route guard
 router.beforeEach((to, from, next) => {
-  const token = sessionStorage.getItem('token'); // Assuming the JWT is stored in localStorage
+  const token = sessionStorage.getItem('token');
+
   if (to.meta.requiresAuth) {
-    // Check if token exists
     if (!token) {
       return next({ name: 'Login' });
     }
 
     try {
-      // Decode the JWT token to extract the role
       const decodedToken = jwtDecode(token);
-      const userRole = decodedToken.role; // Assuming your token has a `role` field
+      const userRole = decodedToken.role;
+      const allowedRoles = to.meta.roles || [];
 
-      // Check if the user's role is allowed for this route
-      const allowedRoles = to.meta.roles;
       if (!allowedRoles.includes(userRole)) {
-        return next({ name: 'Admin' });
+        return next({ name: 'NotFound' }); // ✅ redirect to 404 if role not allowed
       }
     } catch (error) {
       console.error('Error decoding JWT token:', error);
@@ -52,8 +49,7 @@ router.beforeEach((to, from, next) => {
     }
   }
 
-  // If everything is fine, allow navigation
-  next();
+  next(); // ✅ allow access if no auth required or role is valid
 });
 
 export default router;

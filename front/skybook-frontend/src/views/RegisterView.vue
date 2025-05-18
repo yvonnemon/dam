@@ -8,7 +8,14 @@
       <input v-model="password" type="password" :placeholder="t('password')" required autocomplete="off" />
       <input v-model="phone" :placeholder="t('phone-opt')" />
       <input v-model="dni" :placeholder="t('dni')" required />
-      <button type="submit">{{ t('register') }}</button>
+     
+      <select class="roles" v-if="isAdmin()" v-model="role" required>
+        <option value="" disabled selected hidden>{{ t('role') }}</option>
+        <option value="USER">User</option>
+        <option value="ADMIN">Admin</option>
+      </select>
+      <button v-if="!isAdmin()" type="submit">{{ t('register') }}</button>
+      <button v-if="isAdmin()" type="submit">{{ t('save-user') }}</button>
     </form>
 
     <ConfirmModal
@@ -39,7 +46,14 @@
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     color: #333;
   }
-
+   .roles {
+    width: 10dvw;
+    padding: 12px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    transition: border-color 0.3s;
+   }
   h2 {
     text-align: center;
     margin-bottom: 24px;
@@ -115,6 +129,7 @@
 <script setup>
   import { ref, nextTick } from 'vue';
   import { useRouter } from 'vue-router';
+  import { jwtDecode } from 'jwt-decode';
   import api from '../services/api';
   import ConfirmModal from '../components/CustomModal.vue';
   import { useI18n } from 'vue-i18n';
@@ -122,12 +137,16 @@
   const { t } = useI18n();
   const router = useRouter();
 
+  const token = sessionStorage.getItem('token');
+  
   const firstName = ref('');
   const lastName = ref('');
   const email = ref('');
   const password = ref('');
   const phone = ref('');
   const dni = ref('');
+  const role = ref('ROLE');
+  
 
   const error = ref('');
   const success = ref('');
@@ -142,14 +161,21 @@
     success.value = '';
 
     try {
-      const response = await api.post('/auth/register', {
+      let url = '/auth/register';
+      if(isAdmin) {
+        url = '/auth/save'
+      }
+      const response = await api.post(url, {
         firstName: firstName.value,
         lastName: lastName.value,
         email: email.value,
         password: password.value,
         phone: phone.value,
-        dni: dni.value
+        dni: dni.value,
+        role: role.value
       });
+
+
 
       success.value = 'Registration successful! Redirecting to login...';
       await openDownloadModal(
@@ -178,7 +204,19 @@
 
   const handleConfirmDownload = () => {
     showModal.value = false;
-    setTimeout(() => router.push('/login'), 2000);
+    if(!isAdmin()){
+      setTimeout(() => router.push('/login'), 2000);
+    }
+  };
+
+  const isAdmin = () => {
+    if(token){
+      const decodedToken = jwtDecode(token);
+      const userRole = decodedToken.role;
+      return userRole === 'ADMIN';
+    } else {
+      return false;
+    }
   };
 </script>
 

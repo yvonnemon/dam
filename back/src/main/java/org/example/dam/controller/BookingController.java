@@ -47,7 +47,7 @@ public class BookingController {
         return ResponseEntity.ok(asd);
     }
 
-    @GetMapping("/")
+    @GetMapping("/admin") //get all only admin
     public ResponseEntity<List<BookingDTO>> getAllBookings() {
 
         return ResponseEntity.ok(bookingService.findAll());

@@ -54,7 +54,7 @@ public class UserService {
 
 
     public UserDTO save(UserDTO user, boolean isAdmin) {
-        if(!isAdmin) { //TODO
+        if(!isAdmin) {
             user.setRole(Role.USER);
         }
 

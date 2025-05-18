@@ -25,7 +25,7 @@ public class CronService {
         this.planeService = planeService;
     }
 
-    @Scheduled(cron = "0 */10 * * * *")
+    @Scheduled(cron = "0 */30 * * * *")
     public void createFlights(){
         createMultipleFlights(5);
     }
