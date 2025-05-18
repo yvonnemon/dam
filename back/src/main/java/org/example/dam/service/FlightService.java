@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,7 +56,8 @@ public class FlightService {
        try {
            Flight flight = new Flight();
            if (dto.getId() == null) {
-               flight.setFlightNumber("SB" + dto.getDepartureDate());
+               DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddMMyyyy"); //Segun google, cada aerolinea genera sus codigos como les da la gana
+               flight.setFlightNumber("SB" +dto.getDepartureDate().format(formatter));
            } else {
                flight.setFlightNumber(dto.getFlightNumber());
            }

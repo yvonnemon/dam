@@ -50,5 +50,12 @@
   "terms": "Termos",
   "user": "Usuário",
   "you-have-no-bookings-yet": "Você ainda não tem reservas",
-  "your-bookings": "Suas Reservas"
+  "your-bookings": "Suas Reservas",
+  "departure": "Saída",
+    "admin-page": {
+        "search-user": "Buscar por e-mail",
+        "search-departure": "Buscar por aeroporto de saída",
+        "search-destination": "Buscar por aeroporto de destino",
+        "search-booking-number": "Buscar por número de reserva"
+    }
 }

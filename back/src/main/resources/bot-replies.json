@@ -1,0 +1,7 @@
+{
+  "greeting": ["greeting.1", "greeting.2"],
+  "price": ["price.1", "price.2"],
+  "cancel": ["cancel.1", "cancel.2"],
+  "refund": ["refund.1", "refund.2"],
+  "unknown": ["unknown.1"]
+}

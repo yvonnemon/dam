@@ -8,6 +8,7 @@
 
     <Footer />
   </div>
+  <ChatWidget />
 </template>
 
 <style scoped>
@@ -61,6 +62,7 @@
   import { useRoute } from 'vue-router';
   import AppHeader from './components/Header.vue'; 
   import Footer from './components/Footer.vue';
+  import ChatWidget from './components/ChatWidget.vue'
   import { useI18n } from 'vue-i18n';
   const { t } = useI18n();
 
