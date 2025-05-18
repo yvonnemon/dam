@@ -109,7 +109,8 @@ onBeforeUnmount(() => {
     }
 
     .chat-header {
-        background: #007bff;
+        background: #0A3B6C;
+        border-radius: 10px;
         color: white;
         padding: 10px;
         font-weight: bold;
@@ -125,6 +126,7 @@ onBeforeUnmount(() => {
 
     .chat-body {
         padding: 10px;
+        border-radius: 10px;
         max-height: 200px;
         overflow-y: auto;
         font-size: 14px;
@@ -133,6 +135,7 @@ onBeforeUnmount(() => {
 
     input {
         border: none;
+        border-radius: 10px;
         border-top: 1px solid #ccc;
         padding: 10px;
         outline: none;

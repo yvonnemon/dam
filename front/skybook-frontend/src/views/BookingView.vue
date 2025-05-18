@@ -1,12 +1,16 @@
 <template>
   <div class="bookings-view">
-    <h2>Your Bookings</h2>
-
+    <h2> {{ t('your-bookings') }}</h2>
+        <div class="filters booking">
+          <input class="filter-input" v-model="filterDeparture" :placeholder="t('admin-page.search-departure')" />
+          <input class="filter-input" v-model="filterDestination" :placeholder="t('admin-page.search-destination')" />
+          <input class="filter-input" v-model="filterBookingNumber" :placeholder="t('admin-page.search-booking-number')" />
+        </div>
     <div v-if="loading" class="loading-message"> {{ t('loading-your-bookings') }} </div>
     <div v-else-if="bookings.length === 0" class="no-bookings"> {{ t('you-have-no-bookings-yet') }} </div>
 
     <div class="booking-list">
-      <div v-for="booking in bookings" :key="booking.id" class="booking-card">
+      <div v-for="booking in filteredBookings" :key="booking.id" class="booking-card">
         <div class="card-header">
           <h3>{{ t('booking-number') }}: {{ booking.number }}</h3>
           
@@ -158,10 +162,43 @@
   .status-cancelled {
     color: red;
   }
+
+    /** filter */
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding: 1rem;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    margin: auto;
+    margin-bottom: 1rem;
+    &.booking {
+      max-width: 60dvw;
+    }
+  }
+  
+  .filter-input {
+  padding: 0.6rem 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+  flex: 1;
+  min-width: 200px;
+  transition: border-color 0.3s;
+  }
+  
+  .filter-input:focus {
+  border-color: #007bff;
+  outline: none;
+  }
+
 </style>
 
 <script setup>
-  import { ref, onMounted, nextTick } from 'vue';
+  import { ref, onMounted, nextTick, computed } from 'vue';
   import api from '../services/api';
   import { useI18n } from 'vue-i18n';
   import { useToast } from 'vue-toastification';
@@ -173,6 +210,10 @@
   const loading = ref(true);
   const message = ref('');
   const toast = useToast();
+
+  const filterDeparture = ref('');
+  const filterDestination = ref('');
+  const filterBookingNumber = ref('');
 
   const showModal = ref(false);
   const modalMessage = ref('');
@@ -278,6 +319,20 @@
     return status === 'CANCELLED' ? true : false;
   };
 
+  const filteredBookings = computed(() => {
+    return bookings.value.filter(booking => {
+     
+      const dep = booking.flight?.departureAirport;
+      const dest = booking.flight?.destinationAirport;
+      const number = booking.number?.toLowerCase() || '';
+
+      return (
+        `${dep?.name} ${dep?.iata}`.toLowerCase().includes(filterDeparture.value.toLowerCase()) &&
+        `${dest?.name} ${dest?.iata}`.toLowerCase().includes(filterDestination.value.toLowerCase()) &&
+        number.includes(filterBookingNumber.value.toLowerCase())
+      );
+    });
+  });
 
 
   onMounted(() => {

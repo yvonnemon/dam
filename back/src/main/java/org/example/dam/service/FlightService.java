@@ -8,6 +8,8 @@ import org.example.dam.repository.AirportRepository;
 import org.example.dam.repository.FlightRepository;
 import org.example.dam.repository.PlaneRepository;
 import org.example.dam.util.Util;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -37,6 +39,11 @@ public class FlightService {
         }
 
         return flights;
+    }
+
+    public Page<FlightDTO> getFilteredFlights(String airport, String date, Pageable pageable) {
+        Page<Flight> page = flightRepository.findFilteredFlights(airport, date, pageable);
+        return page.map(this::entityToDto); // Convert entities to DTOs
     }
 
     public FlightDTO findById(Long id) {

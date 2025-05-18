@@ -55,8 +55,8 @@
     <section>
       <h3> {{ t('all-flights') }}</h3>
         <div class="filters">
-          <input type="date" v-model="filterDate" class="filter-input" />
-          <input type="text" v-model="filterAirport" :placeholder="t('search-by-airport')" class="filter-input" />
+          <input type="date" v-model="filterDate"  @change="fetchFlights()" class="filter-input" />
+          <input type="text" v-model="filterAirport" @input="fetchFlights()" :placeholder="t('search-by-airport')" class="filter-input" />
         </div>
       <div class="table-container">
         <table>
@@ -84,6 +84,12 @@
             </tr>
           </tbody>
         </table>
+      </div>
+            <div class="pagination">
+        <button v-for="page in totalPages" :key="page" @click="goToPage(page)" :class="['page-btn', { active: currentPage.value === page - 1 }]">
+          {{ page }}
+        </button>
+
       </div>
     </section>
 
@@ -299,6 +305,34 @@
   outline: none;
   }
 
+  /* pagination */
+  .pagination {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .page-btn {
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background-color: #2196f3;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+  }
+
+  .page-btn:hover {
+    background-color: #0559A3;
+  }
+
+  .page-btn.active {
+    background-color: #0559A3;
+    color: white;
+    border-color: #2196f3;
+  }
+
 </style>
 
 
@@ -314,6 +348,7 @@
   const { t } = useI18n();
 
   const flights = ref([]);
+  const loading = ref(true);
   const bookings = ref([]);
   const airports = ref([]);
   const planes = ref([]);
@@ -337,6 +372,10 @@
   const filterDestination = ref('');
   const filterBookingNumber = ref('');
 
+  const currentPage = ref(0);
+  const pageSize = ref(10);
+  const totalPages = ref(0);
+
   const newFlight = ref({
     departureId: '',
     destinationId: '',
@@ -346,7 +385,7 @@
   
   const createFlight = async () => {
     try {
-      await api.post('/flights', {
+      await api.post('/flights/', {
         ...newFlight.value,
         departureId: newFlight.value.departureId.id,     
         destinationId: newFlight.value.destinationId.id,
@@ -410,12 +449,31 @@
 
 
   const fetchFlights = async () => {
-    const res = await api.get('/flights/');
-    flights.value = res.data;
+    try {
+      const res = await api.get('/flights/paginated', {
+        params: {
+          page: currentPage.value,
+          size: pageSize.value,
+          airport: filterAirport.value || null,
+          date: filterDate.value || null
+        }
+      });
+      flights.value = res.data.content;       // paginated results
+      totalPages.value = res.data.totalPages; // for page navigation
+    } catch (err) {
+      message.value = 'Failed to load flights.';
+    } finally {
+      loading.value = false;
+    }
+  };
+
+  const goToPage = (page) => {
+    currentPage.value = page;
+    fetchFlights();
   };
 
   const fetchBookings = async () => {
-    const res = await api.get('/bookings/'); // Make sure this endpoint exists and is admin-only
+    const res = await api.get('/bookings/admin'); // Make sure this endpoint exists and is admin-only
     bookings.value = res.data;
   };
 
@@ -454,19 +512,19 @@
   });
 
   const filteredBookings = computed(() => {
-  return bookings.value.filter(booking => {
-    const user = booking.user?.email?.toLowerCase() || '';
-    const dep = booking.flight?.departureAirport;
-    const dest = booking.flight?.destinationAirport;
-    const number = booking.number?.toLowerCase() || '';
+    return bookings.value.filter(booking => {
+      const user = booking.user?.email?.toLowerCase() || '';
+      const dep = booking.flight?.departureAirport;
+      const dest = booking.flight?.destinationAirport;
+      const number = booking.number?.toLowerCase() || '';
 
-    return (
-      user.includes(filterUser.value.toLowerCase()) &&
-      `${dep?.name} ${dep?.iata}`.toLowerCase().includes(filterDeparture.value.toLowerCase()) &&
-      `${dest?.name} ${dest?.iata}`.toLowerCase().includes(filterDestination.value.toLowerCase()) &&
-      number.includes(filterBookingNumber.value.toLowerCase())
-    );
+      return (
+        user.includes(filterUser.value.toLowerCase()) &&
+        `${dep?.name} ${dep?.iata}`.toLowerCase().includes(filterDeparture.value.toLowerCase()) &&
+        `${dest?.name} ${dest?.iata}`.toLowerCase().includes(filterDestination.value.toLowerCase()) &&
+        number.includes(filterBookingNumber.value.toLowerCase())
+      );
+    });
   });
-});
    
 </script>

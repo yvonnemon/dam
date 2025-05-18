@@ -59,6 +59,10 @@ public class JwtUtils {
                 .compact();
     }
 
+    public String extractRole(String token) {
+        return getClaims(token).get("role", String.class);
+    }
+
     private SecretKey getSignInKey() {
         return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }

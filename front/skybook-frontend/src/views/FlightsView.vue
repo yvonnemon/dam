@@ -3,8 +3,8 @@
     <h2>{{ t('book-a-flight') }}</h2>
 
     <div class="filters">
-      <input type="date" v-model="filterDate" class="filter-input" />
-      <input type="text" v-model="filterAirport" :placeholder="t('search-by-airport')" class="filter-input" />
+      <input type="date" v-model="filterDate"  @change="fetchFlights()" class="filter-input" />
+      <input type="text" v-model="filterAirport" @input="fetchFlights()" :placeholder="t('search-by-airport')" class="filter-input" />
     </div>
 
 
@@ -12,13 +12,13 @@
       {{ t('loading-available-flights') }}
     </div>
 
-    <div v-else-if="filteredFlights.length === 0" class="no-flights">
+    <div v-else-if="flights.length === 0" class="no-flights">
       {{ t('no-flights-available-at-the-moment') }}
     </div>
 
 
     <div class="flight-list">
-      <div v-for="flight in filteredFlights" :key="flight.id" class="flight-card">
+      <div v-for="flight in flights" :key="flight.id" class="flight-card">
         <div class="card-content">
           <!-- Center time & route -->
           <div class="flight-info">
@@ -51,7 +51,14 @@
           </div>
         </div>
       </div>
+
     </div>
+      <div class="pagination">
+        <button v-for="page in totalPages" :key="page" @click="goToPage(page)" :class="['page-btn', { active: currentPage.value === page - 1 }]">
+          {{ page }}
+        </button>
+
+      </div>
 
     <ConfirmModal
       :visible="showModal"
@@ -279,6 +286,35 @@ h2 {
   border-color: #007bff;
   outline: none;
   }
+
+  /* pagination */
+  .pagination {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .page-btn {
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background-color: #2196f3;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+  }
+
+  .page-btn:hover {
+    background-color: #0559A3;
+  }
+
+  .page-btn.active {
+    background-color: #0559A3;
+    color: white;
+    border-color: #2196f3;
+  }
+
 </style>
 
 
@@ -305,21 +341,34 @@ h2 {
 
   const flightSelected = ref('');
 
+  const currentPage = ref(0);
+  const pageSize = ref(10);
+  const totalPages = ref(0);
+
+
   const newBooking = ref({
     flightId: '',
     datePurchase: new Date(),
   })
 
-  const fetchFlights = async () => {
-    try {
-      const res = await api.get('/flights/');
-      flights.value = res.data;
-    } catch (err) {
-      message.value = 'Failed to load flights.';
-    } finally {
-      loading.value = false;
-    }
-  };
+const fetchFlights = async () => {
+  try {
+    const res = await api.get('/flights/paginated', {
+      params: {
+        page: currentPage.value,
+        size: pageSize.value,
+        airport: filterAirport.value || null,
+        date: filterDate.value || null
+      }
+    });
+    flights.value = res.data.content;       // paginated results
+    totalPages.value = res.data.totalPages; // for page navigation
+  } catch (err) {
+    message.value = 'Failed to load flights.';
+  } finally {
+    loading.value = false;
+  }
+};
 
   const bookFlight = async (flightId) => {
     newBooking.value.flightId = flightId;
@@ -387,18 +436,10 @@ h2 {
     return userBookings.value.includes(flightId);
   };
 
-
-const filteredFlights = computed(() => {
-    return flights.value.filter(flight => {
-      const matchesDate = !filterDate.value || flight.departureDate.startsWith(filterDate.value);
-      const matchesAirport =
-        !filterAirport.value ||
-        flight.departureName.toLowerCase().includes(filterAirport.value.toLowerCase()) ||
-        flight.destinationName.toLowerCase().includes(filterAirport.value.toLowerCase());
-
-      return matchesDate && matchesAirport;
-    });
-  });
+  const goToPage = (page) => {
+    currentPage.value = page;
+    fetchFlights();
+  };
 
   onMounted(() => {
     const token = sessionStorage.getItem('token');

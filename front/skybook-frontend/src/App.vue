@@ -1,7 +1,7 @@
 <template>
   <div class="layout">
     <AppHeader v-if="!['/register', '/login'].includes(route.path)"  />
-
+    <AppHeader v-if="isAdmin() && ['/register', '/login'].includes(route.path)"  />
     <main class="page-content">
       <router-view />
     </main>
@@ -40,6 +40,10 @@
 
 .page-content {
   background-image: url('./assets/fondo2.webp');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: center;
   flex: 1;
   padding: 20px;
   background-size: cover;
@@ -64,10 +68,19 @@
   import Footer from './components/Footer.vue';
   import ChatWidget from './components/ChatWidget.vue'
   import { useI18n } from 'vue-i18n';
+  import { jwtDecode } from 'jwt-decode';
+
   const { t } = useI18n();
 
   const route = useRoute();
 
+  const token = sessionStorage.getItem('token');
+
+  const isAdmin = () => {
+    const decodedToken = jwtDecode(token);
+    const userRole = decodedToken.role;
+    return userRole === 'ADMIN';
+  };
   
 </script>
 
