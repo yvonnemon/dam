@@ -61,10 +61,10 @@ public class ChatController {
     }
 
     private static final Map<String, List<String>> intentKeywords = Map.of(
-            "greeting", List.of("hello", "hi", "hey", "hola"),
-            "price", List.of("price", "cost", "how much", "fee"),
-            "cancel", List.of("cancel", "cancelation", "cancellation"),
-            "refund", List.of("refund", "money back", "reimbursement"),
+            "greeting", List.of("hello", "hi", "hey", "hola", "ola"),
+            "price", List.of("price", "cost", "how much", "fee", "precio", "costo", "cuanto"),
+            "cancel", List.of("cancel", "cancelation", "cancellation", "cancelar"),
+            "refund", List.of("refund", "money back", "reimbursement", "reembolso", "devolucion"),
             "unknown", List.of() // fallback
     );
 }

@@ -77,9 +77,11 @@
   const token = sessionStorage.getItem('token');
 
   const isAdmin = () => {
-    const decodedToken = jwtDecode(token);
-    const userRole = decodedToken.role;
-    return userRole === 'ADMIN';
+    if(token) {
+      const decodedToken = jwtDecode(token);
+      const userRole = decodedToken.role;
+      return userRole === 'ADMIN';
+    }
   };
   
 </script>

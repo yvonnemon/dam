@@ -5,20 +5,23 @@
       <button class="menu-toggle" @click="isMenuOpen = !isMenuOpen">
         <span class="material-symbols-outlined">menu</span>
       </button>
+           Welcome {{ userName }}
     </div>
-
     <nav class="nav-links" :class="{ open: isMenuOpen }">
       <router-link to="/flights">{{ t('flights') }}</router-link>
       <router-link to="/bookings">{{ t('bookings') }}</router-link>
       <router-link v-if="isAdmin()" to="/register">{{ t('register') }}</router-link>
       <router-link v-if="isAdmin()" to="/admin">{{ t('admin') }}</router-link>
-      <button @click="logout()">{{ t('logout') }}</button>
+      <button @click="logout()" class="button-with-icon"><span class="material-symbols-outlined">logout</span>{{ t('logout') }}</button>
     </nav>
   </header>
 </template>
 
   
 <style scoped>
+.user-name {
+
+}
 
 .site-header {
   background-color: #0a3b6c;
@@ -37,6 +40,9 @@
   padding: 1.25rem 10dvw;
 }
 
+.button-with-icon {
+  max-width: fit-content;
+}
 
   a:link {
     text-decoration: none;
@@ -150,6 +156,8 @@
   import { useI18n } from 'vue-i18n';
   import { jwtDecode } from 'jwt-decode';
 
+  const userName = ref('');
+
   const { t } = useI18n();
   const router = useRouter();
   const isMenuOpen = ref(false);
@@ -162,6 +170,7 @@
 
   const isAdmin = () => {
     const decodedToken = jwtDecode(token);
+    userName.value = decodedToken.name || decodedToken.email || 'User';
     const userRole = decodedToken.role;
     return userRole === 'ADMIN';
   };

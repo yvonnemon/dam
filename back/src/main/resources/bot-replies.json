@@ -1,7 +1,7 @@
 {
-  "greeting": ["greeting.1", "greeting.2"],
-  "price": ["price.1", "price.2"],
-  "cancel": ["cancel.1", "cancel.2"],
-  "refund": ["refund.1", "refund.2"],
-  "unknown": ["unknown.1"]
+  "greeting": ["greeting.1", "greeting.2", "greeting.3", "greeting.4"],
+  "price": ["price.1", "price.2", "price.3", "price.4"],
+  "cancel": ["cancel.1", "cancel.2", "cancel.3", "cancel.4"],
+  "refund": ["refund.1", "refund.2", "refund.3", "refund.4"],
+  "unknown": ["unknown.1", "unknown.2", "unknown.3", "unknown.4"]
 }

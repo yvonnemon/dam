@@ -17,6 +17,38 @@
   "book-a-flight": "Reservar un Vuelo",
   "booking-number": "Numero de reserva",
   "bookings": "Reservas",
+    "bot-translations": {
+    "unknown": {
+      "1": "Lo siento, no pude entender lo que dijiste.",
+      "2": "No estoy seguro de entender. Intenta preguntar por precio, cancelar o reembolso",
+      "3": "Try asking about price, cancel, or refund.",
+      "4": "Please, call us if you need detailed information"
+    },
+    "greeting": {
+      "1": "Hello! How can I help you today?",
+      "2": "Hi there! 👋 Need assistance?",
+      "3": "Hey! How can I help?",
+      "4": "Hello! Do you need some help?"
+    },
+    "price": {
+      "1": "Flights start at 5000€ per hour.",
+      "2": "Prices vary by destination and time.",
+      "3": "Prices are fixed by plane and route.",
+      "4": "Empty leg flights are offered at a discounted price."
+    },
+    "cancel": {
+      "1": "You can cancel in the 'Bookings' section.",
+      "2": "Cancellation is available up to 24h before flight.",
+      "3": "cancel3",
+      "4": "cancel4"
+    },
+    "refund": {
+      "1": "Refunds are allowed up to 24h before departure.",
+      "2": "Check our refund policy in your account settings.",
+      "3": "Refunds may take up to 7 days.",
+      "4": "Call us if you have any issue with your refund."      
+    }
+  },
   "cancel-booking": "Cancelar Reserva",
   "create-flight": "Crear Vuelo",
   "create-new-flight": "Crear Nuevo Vuelo",
