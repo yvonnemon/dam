@@ -6,7 +6,7 @@
       <input v-model="lastName" :placeholder="t('last-name')" required />
       <input v-model="email" type="email" :placeholder="t('email')" required />
       <input v-model="password" type="password" :placeholder="t('password')" required autocomplete="off" />
-      <input v-model="phone" :placeholder="t('phone-opt')" />
+      <input v-model="phone" type="number" :placeholder="t('phone-opt')" />
       <input v-model="dni" :placeholder="t('dni')" required />
      
       <select class="roles" v-if="isAdmin()" v-model="role" required>
