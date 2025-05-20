@@ -18,6 +18,13 @@ INSERT INTO `plane`(`id`, `capacity`, `max_range`, `model`, `name`, `pilot_numbe
 INSERT INTO `plane`(`id`, `capacity`, `max_range`, `model`, `name`, `pilot_number`) VALUES (null,'19','9260','Gulfstream G500','Gulfstream G500','2');
 INSERT INTO `plane`(`id`, `capacity`, `max_range`, `model`, `name`, `pilot_number`) VALUES (null,'19','12500','Gulfstream G550','Gulfstream G550','2');
 
+INSERT INTO `user` (`user_id`, `date_of_birth`, `dni`, `email`, `first_name`, `last_name`, `password`, `phone`, `role`) VALUES
+(1, NULL, '99999999A', 'pepe@pepe.com', 'pepe', 'pepest', '$2a$10$.jJscvi0C7VQtGDEE/3ax.B.gkRodNyPXEXCfcFVpHm1EGZdXJcdy', '666666666', 'ADMIN'),
+(2, NULL, 'asdas241241', 'popo@popo.com', 'popo', 'popost', '$2a$10$YcUddQNMxTacH4r01itPxuo7kzPu2x9kRCe3e3GqZ6/zeKcVlm6X2', '123456789', 'USER'),
+(4, NULL, '123987456', 'pupu@pupu.com', 'pupu', 'pupust', '$2a$10$PA674Js3FXmXiFB9MhCuNeTE.FLszW1c3l99Fix.DXHnCZqPRNWwO', '666666666', 'ADMIN'),
+(8, NULL, '123qwe123', 'papa@papa.com', 'papa', 'papast', '$2a$10$rE8WCoiPHMU2s4ECuD5fIef8Cqamqeuedzl.NcQ6wB2Qw/19mwDD2', '123123123', 'USER');
+
+COMMIT;
 
 INSERT INTO `airport`( `city`, `country`, `iata`, `icao`, `latitude`, `longitude`, `name`) VALUES ('Anaa','PF','AAA','NTGA','-173526','-145509995','Anaa Airport');
 INSERT INTO `airport`( `city`, `country`, `iata`, `icao`, `latitude`, `longitude`, `name`) VALUES ('Tanbar','AU','AAB','YARY','-2669639','141048718','Arrabury Airport');
