@@ -43,7 +43,7 @@ public class FlightService {
 
     public Page<FlightDTO> getFilteredFlights(String airport, String date, Pageable pageable) {
         Page<Flight> page = flightRepository.findFilteredFlights(airport, date, pageable);
-        return page.map(this::entityToDto); // Convert entities to DTOs
+        return page.map(this::entityToDto);
     }
 
     public FlightDTO findById(Long id) {

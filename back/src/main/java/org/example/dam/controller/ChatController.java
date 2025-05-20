@@ -44,7 +44,7 @@ public class ChatController {
 
         ChatMessage response = new ChatMessage();
         response.setSender("HelpBot");
-        response.setContent(key); // ← return reply key
+        response.setContent(key); // return reply key
         return response;
     }
 

@@ -25,7 +25,7 @@ public class EmailsSender {
         MimeMessage message = javaMailSender.createMimeMessage();
 
         MimeMessageHelper helper = new MimeMessageHelper(message, true);  // true = multipart
-        helper.setFrom("yvo.sobrero@gmail.com");
+        helper.setFrom(mail); //TODO hardcoded for development
         helper.setTo(userEmail);
         helper.setSubject(subject);
 
@@ -39,12 +39,7 @@ public class EmailsSender {
             throw new RuntimeException(e);
         }
 
-        // Replace body placeholder
         helper.setText(content, true);  // true = HTML
-
-        // Add PDF attachment
-       /* byte[] pdfBytes = generatePdf();  // Generate the PDF (this method will be explained)
-        helper.addAttachment("ticket.pdf", new ByteArrayDataSource(pdfBytes, "application/pdf"));*/
 
         try {
             javaMailSender.send(message);
@@ -63,23 +58,6 @@ public class EmailsSender {
             }
         }
     }
-
-   /* private byte[] generatePdf() throws IOException {
-        // PDF generation logic (using iText)
-        try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-            com.itextpdf.kernel.pdf.PdfWriter writer = new com.itextpdf.kernel.pdf.PdfWriter(baos);
-            com.itextpdf.kernel.pdf.PdfDocument pdfDoc = new com.itextpdf.kernel.pdf.PdfDocument(writer);
-            com.itextpdf.layout.Document doc = new com.itextpdf.layout.Document(pdfDoc);
-
-            doc.add(new com.itextpdf.layout.element.Paragraph("Your flight details:"));
-            doc.add(new com.itextpdf.layout.element.Paragraph("This is your ticket."));  // Customize content here
-
-            doc.close();
-            return baos.toByteArray();  // Return PDF as byte array
-        }
-    }*/
-
-
 }
 
 

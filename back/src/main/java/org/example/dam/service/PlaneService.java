@@ -25,7 +25,6 @@ public class PlaneService {
         return planeRepository.findById(id);
     }
 
-    //TODO update y create?
     public Plane save(Plane user) {
         return planeRepository.save(user);
     }

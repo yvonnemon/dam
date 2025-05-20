@@ -19,7 +19,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    //TODO este se queda para el de admin
+    // en principio este no se usa mas que para probar el back
     @PostMapping
     public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO user) {
         return ResponseEntity.ok(userService.save(user, true));
@@ -28,8 +28,6 @@ public class UserController {
     @GetMapping("/{id}")
     public ResponseEntity<UserDTO> getUserById(@PathVariable Long id) {
         return ResponseEntity.ok(userService.findById(id));
-
-
     }
 
 

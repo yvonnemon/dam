@@ -1,6 +1,5 @@
 package org.example.dam.controller;
 
-import org.example.dam.dto.FlightResponseDTO;
 import org.example.dam.dto.FlightDTO;
 import org.example.dam.dto.FlightDTO;
 import org.example.dam.model.Flight;

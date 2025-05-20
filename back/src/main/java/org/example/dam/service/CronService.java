@@ -27,7 +27,7 @@ public class CronService {
 
     @Scheduled(cron = "0 */30 * * * *")
     public void createFlights(){
-        createMultipleFlights(5);
+        createMultipleFlights(5); //crea 5 vuelos cada 30 min
     }
 
     private void createMultipleFlights(int count) {

@@ -43,14 +43,14 @@ public class BookingService {
     private final BookingRepository bookingRepository;
     private final UserRepository userRepository;
     private final FlightRepository flightRepository;
-    @Autowired
-    private EmailsSender emailSender;
+    private final EmailsSender emailSender;
 
-    public BookingService(BookingRepository bookingRepository, UserRepository userRepository, FlightRepository flightRepository) {
+    public BookingService(BookingRepository bookingRepository, UserRepository userRepository, FlightRepository flightRepository, EmailsSender emailSender) {
         this.bookingRepository = bookingRepository;
         this.userRepository = userRepository;
         this.flightRepository = flightRepository;
 
+        this.emailSender = emailSender;
     }
 
     public List<BookingDTO> findAll() {
@@ -58,7 +58,7 @@ public class BookingService {
         List<BookingDTO> bookings = new ArrayList<>();
         for (Booking booking : bookingRepository.findAll()) {
             booking.getUser().setPassword(null);
-           // booking.getUser().setBooking(null);
+
             bookings.add(entityToDto(booking));
         }
 
@@ -126,7 +126,7 @@ public class BookingService {
 
             try {
                 bookingEntity = bookingRepository.save(bookingEntity); // Try to insert
-                sendBookingConfirmation("yvosobrero2@hotmail.com", booking.getUser().getFirstName(), bookingEntity.getBookingNumber()); //TODO hardcodeado el email para que me lleguen
+                sendBookingConfirmation(booking.getUser().getEmail(), booking.getUser().getFirstName(), bookingEntity.getBookingNumber()); //TODO hardcodeado el email para que me lleguen
                 flight.setSeatsReserved(flight.getSeatsReserved() + 1);
                 flightRepository.save(flight);
 
@@ -152,7 +152,6 @@ public class BookingService {
         f.setSeatsReserved(f.getSeatsReserved() - 1);
         flightRepository.save(f);
         bookingRepository.save(b);
-        //bookingRepository.deleteById(id);
     }
 
     public byte[] generateFlightTicketPdf(String bookingNumber, Map<String, String> flightDetails) throws IOException {
